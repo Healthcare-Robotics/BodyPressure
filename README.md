@@ -2,7 +2,7 @@
 ## Inferring Body Pose and Contact Pressure from a Depth Image
 
 <p align="center">
-  <img width="98%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/docs/figures/front_page_fig_v2.JPG?raw=true" alt="None"/>
+  <img width="98%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/docs/figures/front_page_fig_v3.JPG?raw=true" alt="None"/>
 </p>    
 
 ### Paper:
