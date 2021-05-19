@@ -47,25 +47,25 @@ This repository uses Python 3.6, with the exception of the BodyPressureSD synthe
 * `cd data_BP`
 
 Simultaneously-collected multimodal Lying Pose dataset: Follow the instructions on the site below.
-* `https://web.northeastern.edu/ostadabbas/2019/06/27/multimodal-in-bed-pose-estimation/`
+* https://web.northeastern.edu/ostadabbas/2019/06/27/multimodal-in-bed-pose-estimation/
 * Then, put it into `data_BP/SLP/`
 
 Cleaned up and calibrated real data addendum: SLP depth images with in-fill for where hair causes noise and where viewframe drops off side of the bed, spatial transforms from the camera to the bed, and ground truth reconstructed pressure maps P+. This is 484 MB.
 * Run `./download_cleaned_SLP_data` to download 18,180 images, 9,090 maps, and associated transforms.
-* Link to these cleaned up real images: `https://doi.org/10.7910/DVN/ZS7TQS`
+* Link to these cleaned up real images: https://doi.org/10.7910/DVN/ZS7TQS
 
 SLP-3Dfits data: 4,545 SMPL bodies fit to 101 participants in the SLP dataset using mesh vertex to point cloud point optimization. This is 18 MB.
-* Follow the instructions in the following repo: `https://github.com/pgrady3/SLP-3Dfits`
+* Follow the instructions in the following repo: https://github.com/pgrady3/SLP-3Dfits
 * Then, put it in the `data_BP` folder.
 
 BodyPressureSD synthetic dataset: 97,495 SMPL body shapes + poses with synthetic depth images and pressure images. This is 8.5 GB.
 * Run `./download_BodyPressureSD` to download this data. 
-* Link to BodyPressureSD: `https://doi.org/10.7910/DVN/C6J1SP`
+* Link to BodyPressureSD: https://doi.org/10.7910/DVN/C6J1SP
 
 Trained models: the best performing networks presented in the paper.
 * Run `./download_BodyPressureWnet` to download Mod1 and Mod2 for the best performing white-box reconstruction network (177 MB).
 * To use this with the training and evaluation code, you'll have to specify the correct flags. See sections below to understand what flags to use.
-* Link to the models: `https://doi.org/10.7910/DVN/8DJRNX`
+* Link to the models: https://doi.org/10.7910/DVN/8DJRNX
 
 BodyPressureSD addendum: 3D environment meshes for human, blanket, deformed mattress, and deformed pressure sensing mat.
 * You don't need this to get started.
