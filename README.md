@@ -77,7 +77,7 @@ Your file structure should look like this:
 BodyPressure
 ├── data_BP
 │   ├── convnets
-│   │   ├── adjQP_10665ct_128b_500e_0.0001lr.pt
+│   │   ├── CAL_10665ct_128b_500e_0.0001lr.pt
 │   │   ├── betanet_108160ct_128b_volfrac_500e_0.0001lr.pt
 │   │   ├── resnet34_1_anglesDC_108160ct_128b_x1pm_rgangs_lb_slpb_dpns_rt_100e_0.0001lr.pt
 │   │   └── resnet34_2_anglesDC_108160ct_128b_x1pm_0.5rtojtdpth_depthestin_angleadj_rgangs_lb_lv2v_slpb_dpns_rt_40e_0.0001lr.pt
