@@ -2,7 +2,7 @@
 ## Inferring Body Pose and Contact Pressure from a Depth Image
 
 <p align="center">
-  <img width="98%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/front_page_fig_v2.JPG?raw=true" alt="None"/>
+  <img width="98%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/front_page_fig_v2.JPG?raw=true" alt="None"/>
 </p>
 
 ### Paper:
@@ -31,7 +31,7 @@ Please read the licenses carefully. Currently, we have research only and non-com
 
 ### Setup code:
 Clone this repository to get started with inspecting the DepthPress data and training the deep network variants.\
-`git clone https://github.com/henryclever/BodyPressure.git`\
+`git clone https://github.com/Healthcare-Robotics/BodyPressure.git`\
 `cd BodyPressure`\
 `pip install -r requirements.txt`
 
@@ -137,16 +137,16 @@ To visualize a particular subject in the SLP-3Dfits dataset with pressure projec
 This will do a 3D rendering of subject 77, pose number 13, with an uncovered point cloud. You can choose any subject from 1 to 102 or any pose from 1 to 45. All poses below are ground truth SLP-3Dfits (not deep model inferences). It shows them separately to better inspect correspondence with the pressure mat and point cloud. The green also has 3D joints on the SMPL model visualized.
 
 <p align="center">
-  <img width="27%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/00077_13_1.png?raw=true" alt="None"/>
-  <img width="29%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/00077_13_2.png?raw=true" alt="None"/>
-  <img width="34%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/00077_13_3.png?raw=true" alt="None"/>
+  <img width="27%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/00077_13_1.png?raw=true" alt="None"/>
+  <img width="29%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/00077_13_2.png?raw=true" alt="None"/>
+  <img width="34%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/00077_13_3.png?raw=true" alt="None"/>
 </p>
 
 To visualize a particular subject in the SLP-3Dfits dataset in a 2D rendering, run the following:
 * `python3.6 viz_SLP3Dfits.py --p_idx 77 --pose_num 12 --ctype 'cover1' --viz '2D'`
 
 <p align="center">
-  <img width="30%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/00077_13_4.png?raw=true" alt="None"/>
+  <img width="30%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/00077_13_4.png?raw=true" alt="None"/>
 </p>
 
 Both pressure mats are ground truth.
@@ -161,16 +161,16 @@ To visualize a particular subject in the BodyPressureSD dataset with pressure pr
 This will do a 3D rendering of filenum 2, which corresponds to `train_slp_lside_f_1to40_8136.p`, on pose number 492. You can choose any file from 1 to 18 or any pose from 1 to 10000ish, however many poses are in the file. All poses below are ground truth BodyPressureSD data samples (not deep model inferences). It shows them separately to better inspect correspondence with the pressure mat. The green also has 3D joints on the SMPL model visualized.
 
 <p align="center">
-  <img width="34%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/02_492_1.png?raw=true" alt="None"/>
-  <img width="32%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/02_492_2.png?raw=true" alt="None"/>
-  <img width="32%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/02_492_3.png?raw=true" alt="None"/>
+  <img width="34%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/02_492_1.png?raw=true" alt="None"/>
+  <img width="32%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/02_492_2.png?raw=true" alt="None"/>
+  <img width="32%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/02_492_3.png?raw=true" alt="None"/>
 </p>
 
 To visualize a particular subject in the SLP-3Dfits dataset in a 2D rendering, run the following:
 * `python3.6 viz_SLP3Dfits.py --filenum 2 --pose_num 492 --viz '2D'`
 
 <p align="center">
-  <img width="30%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/02_492_4.png?raw=true" alt="None"/>
+  <img width="30%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/02_492_4.png?raw=true" alt="None"/>
 </p>
 
 Pressure mat is ground truth.
@@ -184,7 +184,7 @@ There are 4 steps to train BodyPressureWnet or BodyPressureBnet as implemented i
 
 
 <p align="center">
-  <img width="80%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/train_BPWnet_mod1.jpg?raw=true" alt="None"/>
+  <img width="80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/train_BPWnet_mod1.jpg?raw=true" alt="None"/>
 </p>
 
 
@@ -195,7 +195,7 @@ There are 4 steps to train BodyPressureWnet or BodyPressureBnet as implemented i
 
 
 <p align="center">
-  <img width="80%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/train_BPWnet_mod2_pmr.jpg?raw=true" alt="None"/>
+  <img width="80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/train_BPWnet_mod2_pmr.jpg?raw=true" alt="None"/>
 </p>
 
 * NOTE: These were trained on a RTX-3090 GPU, which has 24 GB ram. BPBnet won't fit on anything much smaller unless you cut the overall batch size. BPWnet will though. Change the `batch_sub_divider` variable in line 231 of `lib_py/mesh_depth_lib_bp.py` to some multiple of 2, e.g. 2 or 4 or 8 and observe an improved memory footprint, at some cost to training speed, but no cost to the overall batch size.
@@ -206,24 +206,24 @@ To test BodyPressureWnet, you can visualize its output in different ways.
 * Run `python evaluate_depthreal_slp.py --slp 'mixedreal'  --pmr --mod 2 --v2v --p_idx 83 --ctype 'cover2' --pose_num 25 --viz '3D'` to do a 3D rendering of the results. Choose a participant between 81 and 102, a pose between 1 and 45, and a cover type. For each of the four renderings below, the ground truth is shown on the right side - with a green mesh and point cloud, as well as the ground truth distributed pressure just below or above it. The estimated pose, contact pressure image, and estimated distribution of pressure are shown on the left side of each rendering.
 
 <p align="center">
-  <img width="23%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/eval_model_3D_1.png?raw=true" alt="None"/>
-  <img width="23%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/eval_model_3D_2.png?raw=true" alt="None"/>
-  <img width="24%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/eval_model_3D_3.png?raw=true" alt="None"/>
-  <img width="20%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/eval_model_3D_4.png?raw=true" alt="None"/>
+  <img width="23%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/eval_model_3D_1.png?raw=true" alt="None"/>
+  <img width="23%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/eval_model_3D_2.png?raw=true" alt="None"/>
+  <img width="24%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/eval_model_3D_3.png?raw=true" alt="None"/>
+  <img width="20%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/eval_model_3D_4.png?raw=true" alt="None"/>
 </p>
 
 
 * Run `python evaluate_depthreal_slp.py --slp 'mixedreal'  --pmr --mod 2 --v2v --p_idx 83 --ctype 'cover2' --pose_num 25 --viz '2D'` to do a 2D rendering of the results.
 
 <p align="center">
-  <img width="70%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/eval_model_2D.png?raw=true" alt="None"/>
+  <img width="70%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/eval_model_2D.png?raw=true" alt="None"/>
 </p>
 
 * Run `python evaluate_depthreal_slp.py --slp 'mixedreal'  --pmr --mod 2 --v2v --p_idx 83 --ctype 'cover2' --pose_num 25 --savefig` to save a picture with the results.
 
 
 <p align="center">
-  <img width="40%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/eval_model_savefig.png?raw=true" alt="None"/>
+  <img width="40%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/eval_model_savefig.png?raw=true" alt="None"/>
 </p>
 
 ## Code for generating BodyPressureSD
@@ -234,5 +234,5 @@ To test BodyPressureWnet, you can visualize its output in different ways.
 
 
 <p align="center">
-  <img width="70%" src="https://github.com/henryclever/BodyPressure/blob/main/docs/figures/depth_save_example.png?raw=true" alt="None"/>
+  <img width="70%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/main/docs/figures/depth_save_example.png?raw=true" alt="None"/>
 </p>
