@@ -202,8 +202,8 @@ There are 4 steps to train BodyPressureWnet or BodyPressureBnet as implemented i
 
 ## Testing BodyPressure deep networks on real SLP data
 
-To test BodyPressureWnet, you can visualize its output in different ways.
-* Run `python evaluate_depthreal_slp.py --slp 'mixedreal'  --pmr --mod 2 --v2v --p_idx 83 --ctype 'cover2' --pose_num 25 --viz '3D'` to do a 3D rendering of the results. Choose a participant between 81 and 102, a pose between 1 and 45, and a cover type. For each of the four renderings below, the ground truth is shown on the right side - with a green mesh and point cloud, as well as the ground truth distributed pressure just below or above it. The estimated pose, contact pressure image, and estimated distribution of pressure are shown on the left side of each rendering.
+To test, you can visualize its output in different ways.
+* Run `python evaluate_depthreal_slp.py --X_is 'W' --slp 'mixedreal'  --pmr --mod 2 --v2v --p_idx 83 --ctype 'cover2' --pose_num 25 --viz '3D'` to do a 3D rendering of the results. Choose a participant between 81 and 102, a pose between 1 and 45, and a cover type. For each of the four renderings below, the ground truth is shown on the right side - with a green mesh and point cloud, as well as the ground truth distributed pressure just below or above it. The estimated pose, contact pressure image, and estimated distribution of pressure are shown on the left side of each rendering.
 
 <p align="center">
   <img width="23%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/docs/figures/eval_model_3D_1.png?raw=true" alt="None"/>
@@ -213,13 +213,13 @@ To test BodyPressureWnet, you can visualize its output in different ways.
 </p>
 
 
-* Run `python evaluate_depthreal_slp.py --slp 'mixedreal'  --pmr --mod 2 --v2v --p_idx 83 --ctype 'cover2' --pose_num 25 --viz '2D'` to do a 2D rendering of the results.
+* Run `python evaluate_depthreal_slp.py --X_is 'W' --slp 'mixedreal'  --pmr --mod 2 --v2v --p_idx 83 --ctype 'cover2' --pose_num 25 --viz '2D'` to do a 2D rendering of the results.
 
 <p align="center">
   <img width="70%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/docs/figures/eval_model_2D.png?raw=true" alt="None"/>
 </p>
 
-* Run `python evaluate_depthreal_slp.py --slp 'mixedreal'  --pmr --mod 2 --v2v --p_idx 83 --ctype 'cover2' --pose_num 25 --savefig` to save a picture with the results.
+* Run `python evaluate_depthreal_slp.py --X_is 'W' --slp 'mixedreal'  --pmr --mod 2 --v2v --p_idx 83 --ctype 'cover2' --pose_num 25 --savefig` to save a picture with the results.
 
 
 <p align="center">
