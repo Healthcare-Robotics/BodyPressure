@@ -821,6 +821,10 @@ class Viz3DPose():
             self.VIZ_DICT['p_img_est'] =pmatV_est*1.
 
 
+            print("Pimg error, mmHg squared", np.mean(np.square(np.array(pmatV)-np.array(pmatV_est)) ) )
+            print("Pimg error, kPa squared", 133.32*133.32*(1/1000000)*np.mean(np.square(np.array(pmatV)-np.array(pmatV_est)) ) )
+
+
 
 
         if viz_type == "2D":

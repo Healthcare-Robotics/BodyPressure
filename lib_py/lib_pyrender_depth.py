@@ -1219,8 +1219,6 @@ class pyRenderMesh():
 
             #print(np.shape(vertex_pressure_init_list_GT))
             RESULTS_DICT['vertex_pressure_list_GT'].append(vertex_pressure_init_list_GT*norm_area_avg_all_gt)
-
-
             verts_color_error_GT = np.array(vertex_pressure_init_list_GT) /23.
             verts_color_jet_GT = np.clip(cm.jet(verts_color_error_GT)[:, 0:3], a_min = 0.0, a_max = 1.0)
 
@@ -1271,10 +1269,8 @@ class pyRenderMesh():
         RESULTS_DICT['vertex_pressure_list_abs_err'].append(list(np.abs(np.array(RESULTS_DICT['vertex_pressure_list_EST'][-1]) - np.array(RESULTS_DICT['vertex_pressure_list_GT'][-1]) )))
         RESULTS_DICT['vertex_pressure_list_sq_err'].append(list(np.square(np.array(RESULTS_DICT['vertex_pressure_list_EST'][-1]) - np.array(RESULTS_DICT['vertex_pressure_list_GT'][-1]) )))
 
-        print(np.mean(RESULTS_DICT['vertex_pressure_list_abs_err']), np.mean(RESULTS_DICT['vertex_pressure_list_sq_err']))
-
-
-
+        print("v2vP error, mmHg squared", np.mean( RESULTS_DICT['vertex_pressure_list_sq_err'][-1]))
+        print("v2vP error, kPa squared", 133.32 * 133.32 * (1 / 1000000) * np.mean( RESULTS_DICT['vertex_pressure_list_sq_err'][-1]))
 
 
         #GET PCERROR
@@ -1396,7 +1392,7 @@ class pyRenderMesh():
 
 
 
-            show_all = False
+            show_all = True
             #print "Viewing"
             if self.first_pass == True:
                 if show_all == True:
