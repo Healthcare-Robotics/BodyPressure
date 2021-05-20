@@ -18,8 +18,8 @@ This repository:
 * Describes how to get started and download the data.
 * Has a tool to visualize the SLP-3Dfits SMPL fits to the SLP dataset. 
 * Has a tool to visualize the BodyPressureSD dataset. 
-* Has step-by-step instructions for training BodyPressureWnet and BodyPressureBnet. 
-* Has step-by-step instructions for testing BodyPressureWnet and BodyPressureBnet on real SLP data.
+* Has instructions for training BodyPressureWnet and BodyPressureBnet. 
+* Has instructions for testing BodyPressureWnet and BodyPressureBnet on real SLP data.
 * Has code for generating resting bodies, synthetic pressure images, and synthetic depth images with FleX, DartFleX, and pyRender.
 
 
