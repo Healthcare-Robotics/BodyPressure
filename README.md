@@ -69,7 +69,7 @@ Trained models: the best performing networks presented in the paper.
 
 BodyPressureSD addendum: 3D environment meshes for human, blanket, deformed mattress, and deformed pressure sensing mat.
 * You don't need this to get started.
-* Link to this dataset addendum: (WARNING!! 148 GB).
+* Link to this dataset addendum: https://doi.org/10.7910/DVN/DJWQPB (WARNING!! 148 GB).
 
 Your file structure should look like this:
 
