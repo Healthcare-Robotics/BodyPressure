@@ -156,7 +156,7 @@ Both pressure mats are ground truth.
 
 To visualize a particular subject in the BodyPressureSD dataset with pressure projection in 3D, run the following:
 * `cd viz_data_only`
-* `python viz_SLP3Dfits.py --filenum 2 --pose_num 492 --viz '3D'`
+* `python viz_BodyPressureSD.py --filenum 2 --pose_num 492 --viz '3D'`
 
 This will do a 3D rendering of filenum 2, which corresponds to `train_slp_lside_f_1to40_8136.p`, on pose number 492. You can choose any file from 1 to 18 or any pose from 1 to 10000ish, however many poses are in the file. All poses below are ground truth BodyPressureSD data samples (not deep model inferences). It shows them separately to better inspect correspondence with the pressure mat. The green also has 3D joints on the SMPL model visualized.
 
@@ -167,7 +167,7 @@ This will do a 3D rendering of filenum 2, which corresponds to `train_slp_lside_
 </p>
 
 To visualize a particular subject in the SLP-3Dfits dataset in a 2D rendering, run the following:
-* `python3.6 viz_SLP3Dfits.py --filenum 2 --pose_num 492 --viz '2D'`
+* `python3.6 viz_BodyPressureSD.py --filenum 2 --pose_num 492 --viz '2D'`
 
 <p align="center">
   <img width="30%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/docs/figures/02_492_4.png?raw=true" alt="None"/>

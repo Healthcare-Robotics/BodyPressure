@@ -17,7 +17,11 @@ txtfile.close()
 import sys
 sys.path.insert(0, '../lib_py')
 sys.path.insert(-1,FILEPATH+'smpl/smpl_webuser3')
-sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
+sys.path.insert(-1,FILEPATH)
+try:
+    sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
+except:
+    pass
 #sys.path.remove('/home/henry/git/sim_camera_resting_scene/DPNet/')
 print(sys.path, 'sys path for evaluate_depthreal_slp.py')
 
@@ -219,6 +223,7 @@ class Viz3DPose():
             self.depth = test_x[im_num:im_num+1, 1:, :, :]
 
             if self.opt.viz == '2D':
+                print('LOADING DEPTH IM RENDER')
                 self.depth_im_render = dat_depth_render[im_num]
                 self.depth_im_render_uncover = dat_depth_render_uncover[im_num]
 
