@@ -711,6 +711,12 @@ class SLPPrepLib():
         #    save_new_xyz_root = True
         #else:
         save_new_xyz_root = False
+        try:
+            load_pickle(FILEPATH + 'data_BP/SLP_SMPL_fits/fits/p' + self.some_subject[-3:] + '/sd%02d.pkl' % (1))
+            save_new_xyz_root = False
+        except:
+            save_new_xyz_root = True
+            print("computing an extra set of ground truth pickle files with marker positions")
 
 
         gender = int(self.phys_arr[int(self.some_subject) - 1, 2])
