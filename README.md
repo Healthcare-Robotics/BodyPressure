@@ -34,6 +34,8 @@ Clone this repository to get started with inspecting the DepthPress data and tra
 `git clone https://github.com/Healthcare-Robotics/BodyPressure.git`\
 `cd BodyPressure`\
 `pip install -r requirements.txt`
+`apt install texlive-latex-extra`
+`apt-get install texlive-latex-extra texlive-fonts-recommended dvipng cm-super`
 
 If it's missing any requirements please create an issue and I will fix it.
 
