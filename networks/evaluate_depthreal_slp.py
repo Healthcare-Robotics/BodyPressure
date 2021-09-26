@@ -18,7 +18,7 @@ import sys
 sys.path.insert(0, '../lib_py')
 sys.path.insert(-1,FILEPATH)
 sys.path.insert(-1,FILEPATH+'smpl/smpl_webuser3')
-sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
+#sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 print(sys.path, 'sys path for evaluate_depthreal_slp.py')
 
 import numpy as np
@@ -42,6 +42,8 @@ except:
 import fixedwt_smpl_pmr_net as fixedwt_smpl_pmr
 import lib_pyrender_depth as libPyRender
 import lib_pyrender_depth_savefig as libPyRenderSave
+import lib_pyrender_depth_plp as libPyRenderPLP
+
 
 import optparse
 
@@ -135,6 +137,8 @@ class Viz3DPose():
 
         if opt.savefig == True:
             self.pyRender = libPyRenderSave.pyRenderMesh(render = pyrender3D)
+        elif opt.perlimbpeak == True:
+            self.pyRender = libPyRenderPLP.pyRenderMesh(render = pyrender3D)
         else:
             self.pyRender = libPyRender.pyRenderMesh(render = pyrender3D)
             #self.pyRender = libPyRender.pyRenderMesh(render = False)
@@ -846,15 +850,8 @@ class Viz3DPose():
 
             if self.opt.savefig == False:
                 self.RESULTS_DICT = self.pyRender.render_mesh_pc_bed_pyrender_everything(smpl_verts, smpl_faces, camera_point,
-                                                                                         bedangle, self.RESULTS_DICT,
-                                                                                         smpl_verts_gt = smpl_verts_gt,
+                                                                                         self.RESULTS_DICT, smpl_verts_gt = smpl_verts_gt,
                                                                                          pc=pc_autofil_red, pmat=pmatV, pmat_est = pmatV_est,
-                                                                                         smpl_render_points=False,
-                                                                                         markers=[[0.0, 0.0, 0.0],
-                                                                                                  [0.0, 1.0, 0.0],
-                                                                                                  [0.0, 0.0, 0.0],
-                                                                                                  [0.0, 0.0, 0.0]],
-                                                                                         dropout_variance=dropout_variance,
                                                                                          targets=self.tar_sample.view(72).cpu(),
                                                                                          scores=sc_sample.cpu())
 
@@ -907,6 +904,9 @@ if __name__ ==  "__main__":
 
     p.add_option('--savefig', action='store_true', dest='savefig', default=False,
                  help='Use blankets.')
+
+    p.add_option('--perlimbpeak', action='store_true', dest='perlimbpeak', default=False,
+                 help='Evaluate peak pressure per limb with threshold.')
 
     opt, args = p.parse_args()
 
@@ -1133,7 +1133,6 @@ if __name__ ==  "__main__":
         else:
             model2 = None
     else:
-
         if sys.version_info.major < 3:
             print(sys.version_info.major)
             model = torch.load(filename1, map_location='cpu')
@@ -1141,7 +1140,8 @@ if __name__ ==  "__main__":
             print(sys.version_info.major)
             pkl.load = partial(pkl.load, encoding='latin1')
             pkl.Unpickler = partial(pkl.Unpickler, encoding='latin1')
-            model = torch.load(filename1, map_location='cpu')#), pickle_module=pkl)
+            model = torch.load(filename1, map_location='cpu', pickle_module=pkl)
+            print("got here")
 
         model = model.eval()
         print ("Network 1 loaded.")
