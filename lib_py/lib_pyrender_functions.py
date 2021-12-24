@@ -193,6 +193,8 @@ def get_triangle_area_vert_weight(verts, faces, verts_idx_red = None):
             norm_area_avg = norm_area_avg[verts_idx_red[:-1]]
 
     #print norm_area_avg[0:3], np.min(norm_area_avg), np.max(norm_area_avg), np.mean(norm_area_avg), np.sum(norm_area_avg)
+
+    #print(np.mean(norm_area_avg), norm_area_avg)
     return norm_area_avg
 
 
@@ -308,40 +310,96 @@ def plot_mesh_norms(verts, verts_norm):
     o3d.visualization.draw_geometries([pcd])
 
 
-def get_human_mesh_parts(smpl_verts, smpl_faces, viz_type = None, segment_limbs = False):
+def get_human_mesh_parts(smpl_verts, smpl_faces, viz_type = None, segment_limbs = False, segment_type='joints'):
 
     if segment_limbs == True:
-        if viz_type == 'arm_penetration':
-            segmented_dict = load_pickle('segmented_mesh_idx_faces_larm.p')
-            human_mesh_vtx_parts = [smpl_verts[segmented_dict['l_arm_idx_list'], :]]
-            human_mesh_face_parts = [segmented_dict['l_arm_face_list']]
-        elif viz_type == 'leg_correction':
-            segmented_dict = load_pickle('segmented_mesh_idx_faces_rleg.p')
-            human_mesh_vtx_parts = [smpl_verts[segmented_dict['r_leg_idx_list'], :]]
-            human_mesh_face_parts = [segmented_dict['r_leg_face_list']]
-        else:
+        if segment_type == 'joints':
             #print "got here"
-            segmented_dict = load_pickle('../lib_py/segmented_mesh_idx_faces.p')
-            human_mesh_vtx_parts = [smpl_verts[segmented_dict['l_lowerleg_idx_list'], :],
-                                    smpl_verts[segmented_dict['r_lowerleg_idx_list'], :],
-                                    smpl_verts[segmented_dict['l_upperleg_idx_list'], :],
-                                    smpl_verts[segmented_dict['r_upperleg_idx_list'], :],
-                                    smpl_verts[segmented_dict['l_forearm_idx_list'], :],
-                                    smpl_verts[segmented_dict['r_forearm_idx_list'], :],
-                                    smpl_verts[segmented_dict['l_upperarm_idx_list'], :],
-                                    smpl_verts[segmented_dict['r_upperarm_idx_list'], :],
-                                    smpl_verts[segmented_dict['head_idx_list'], :],
-                                    smpl_verts[segmented_dict['torso_idx_list'], :]]
-            human_mesh_face_parts = [segmented_dict['l_lowerleg_face_list'],
-                                     segmented_dict['r_lowerleg_face_list'],
-                                     segmented_dict['l_upperleg_face_list'],
-                                     segmented_dict['r_upperleg_face_list'],
-                                     segmented_dict['l_forearm_face_list'],
-                                     segmented_dict['r_forearm_face_list'],
-                                     segmented_dict['l_upperarm_face_list'],
-                                     segmented_dict['r_upperarm_face_list'],
-                                     segmented_dict['head_face_list'],
-                                     segmented_dict['torso_face_list']]
+            segmented_dict = load_pickle('../lib_py/segmented_mesh_idx_faces_joints.p')
+            human_mesh_vtx_parts = [np.array(smpl_verts[segmented_dict['l_lowerleg_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_lowerleg_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['l_upperleg_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_upperleg_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['l_forearm_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_forearm_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['l_upperarm_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_upperarm_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['head_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['torso_idx_list']])]
+            human_mesh_face_parts = [np.array(segmented_dict['l_lowerleg_face_list']),
+                                     np.array(segmented_dict['r_lowerleg_face_list']),
+                                     np.array(segmented_dict['l_upperleg_face_list']),
+                                     np.array(segmented_dict['r_upperleg_face_list']),
+                                     np.array(segmented_dict['l_forearm_face_list']),
+                                     np.array(segmented_dict['r_forearm_face_list']),
+                                     np.array(segmented_dict['l_upperarm_face_list']),
+                                     np.array(segmented_dict['r_upperarm_face_list']),
+                                     np.array(segmented_dict['head_face_list']),
+                                     np.array(segmented_dict['torso_face_list'])]
+
+        elif segment_type == 'pressure':
+            #print "got here"
+            segmented_dict = load_pickle('../lib_py/segmented_mesh_idx_faces_pressure_reduced.p')
+            #for item in segmented_dict: print(item)
+            human_mesh_vtx_parts = [np.array(smpl_verts[segmented_dict['l_toes_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_toes_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['l_heel_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_heel_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['l_elbow_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_elbow_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['l_shoulder_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_shoulder_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['spine_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['head_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['l_hip_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_hip_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['sac_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['isc_idx_list']])]
+            human_mesh_face_parts = [np.array(segmented_dict['l_toes_face_list']),
+                                     np.array(segmented_dict['r_toes_face_list']),
+                                     np.array(segmented_dict['l_heel_face_list']),
+                                     np.array(segmented_dict['r_heel_face_list']),
+                                     np.array(segmented_dict['l_elbow_face_list']),
+                                     np.array(segmented_dict['r_elbow_face_list']),
+                                     np.array(segmented_dict['l_shoulder_face_list']),
+                                     np.array(segmented_dict['r_shoulder_face_list']),
+                                     np.array(segmented_dict['spine_face_list']),
+                                     np.array(segmented_dict['head_face_list']),
+                                     np.array(segmented_dict['l_hip_face_list']),
+                                     np.array(segmented_dict['r_hip_face_list']),
+                                     np.array(segmented_dict['sac_face_list']),
+                                     np.array(segmented_dict['isc_face_list'])]
+
+        '''elif segment_type == 'pressure':
+            #print "got here"
+            segmented_dict = load_pickle('../lib_py/segmented_mesh_idx_faces_pressure.p')
+            human_mesh_vtx_parts = [np.array(smpl_verts[segmented_dict['l_foot_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_foot_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['l_leg_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_leg_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['l_arm_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_arm_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['l_shoulder_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_shoulder_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['spine_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['head_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['l_hip_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['r_hip_idx_list']]),
+                                    np.array(smpl_verts[segmented_dict['sac_isc_idx_list']])]
+            human_mesh_face_parts = [np.array(segmented_dict['l_foot_face_list']),
+                                     np.array(segmented_dict['r_foot_face_list']),
+                                     np.array(segmented_dict['l_leg_face_list']),
+                                     np.array(segmented_dict['r_leg_face_list']),
+                                     np.array(segmented_dict['l_arm_face_list']),
+                                     np.array(segmented_dict['r_arm_face_list']),
+                                     np.array(segmented_dict['l_shoulder_face_list']),
+                                     np.array(segmented_dict['r_shoulder_face_list']),
+                                     np.array(segmented_dict['spine_face_list']),
+                                     np.array(segmented_dict['head_face_list']),
+                                     np.array(segmented_dict['l_hip_face_list']),
+                                     np.array(segmented_dict['r_hip_face_list']),
+                                     np.array(segmented_dict['sac_isc_face_list'])]'''
+
     else:
         human_mesh_vtx_parts = [smpl_verts]
         human_mesh_face_parts = [smpl_faces]
