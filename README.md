@@ -6,7 +6,7 @@
 </p>    
 
 ### Paper:
-Clever, Henry M., Patrick Grady, Greg Turk, and Charles C. Kemp. "BodyPressure: Inferring Body Pose and Contact Pressure from a Depth Image." ArXiv preprint: https://arxiv.org/pdf/2105.09936.pdf
+Clever, Henry M., Patrick Grady, Greg Turk, and Charles C. Kemp. "BodyPressure: Inferring Body Pose and Contact Pressure from a Depth Image." ArXiv preprint: https://arxiv.org/pdf/2105.09936.pdf *Accepted for publication at IEEE Transactions on Pattern Analysis and Machine Intelligence, 12/27/2021*
 
 ### Code version (v1.0) note:
 This is the "initial submission" version of the code.
