@@ -17,10 +17,11 @@ First let's inspect how the camera frame is attached to the bed. It is fixed to 
   <img width="70%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_2.JPG?raw=true" alt="None"/>
 </p>  
 
-Four points where frame is fixed:
+The camera frame is mounted to the bedframe at four locations as shown below:
 <p align="center">
   <img width="100%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_3.JPG?raw=true" alt="None"/>
 </p>  
+It is essential to fix these points securely to ensure safety of the frame. The top two mounts consist of through-holes that you will have to drill through the bed. The bottom two mounts are more tricky, and use 1/8'' thick aluminum plates to hook onto the steel buttons on the bed
 
 ## Construction of the base of the frame on the headboard of the bed
 
@@ -29,8 +30,15 @@ Building the bottom brace of the frame:
   <img width=80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_4.JPG?raw=true" alt="None"/>
 </p>  
 
+You will need to use machine shop tools to fabricate the 1/8'' thick aluminum plates. I was able to get away with using a drill press, a band saw, and a table mounted belt sander. The specification diagram for the left bracket is shown below. The right bracket mirrors the left one. Here are my recommendations for machining each bracket:
+1. Cut out a rectangular piece of aluminum as large as the overall dimensions.
+2. 
+                                                                                                                                           
+                                                                                                                                           
 Aluminum plate on the bottom left side (when facing headboard from behind the bed):
-<p align="center">
+
+
+                                                                                                                     <p align="center">
   <img width="80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_5.JPG?raw=true" alt="None"/>
 </p>  
 
