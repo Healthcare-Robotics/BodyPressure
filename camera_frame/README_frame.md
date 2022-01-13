@@ -9,7 +9,7 @@
 ## Hardware design for affixing the camera frame to the bedframe
 
 <p align="center">
-  <img width="48%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_2.JPG?raw=true" alt="None"/>
+  <img width="70%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_2.JPG?raw=true" alt="None"/>
 </p>  
 
 Four points where frame is fixed:
@@ -21,7 +21,7 @@ Four points where frame is fixed:
 
 Building the bottom brace of the frame:
 <p align="center">
-  <img width=60%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_4.JPG?raw=true" alt="None"/>
+  <img width=80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_4.JPG?raw=true" alt="None"/>
 </p>  
 
 Aluminum plate on the bottom left side (when facing headboard from behind the bed):
