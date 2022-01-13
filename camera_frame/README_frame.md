@@ -5,8 +5,10 @@
 <p align="center">
   <img width="48%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_1.JPG?raw=true" alt="None"/>
 </p>  
-See aluminum framing in:\
+See aluminum framing in:
+
 `BodyPressure/camera_frame/bill_of_materials_cameraframe`
+`apt-get install texlive-latex-extra texlive-fonts-recommended dvipng cm-super`
 
 ## Hardware design for affixing the camera frame to the bedframe
 
