@@ -7,7 +7,7 @@
 </p>  
 See aluminum framing bill of materials in:
 
-`BodyPressure/camera_frame/bill_of_materials_cameraframe.pdf`
+`BodyPressure/camera_frame/bill_of_materials_cameraframe.pdf`. You also need to get eight M5 flathead screws that are 1cm long.
 
 **NOTE: These build instructions are provided "AS IS". Improper installation may result in serious injury to yourself or others, damage to your hardware, or damage to other objects in the vicinity. You are solely responsible for any damages or harm incurred while building this frame, using this frame, or any consequences thereof. Henry M. Clever and any party directly or indirectly involved with this project or build instructions accept no liability for damage, injury or any legal responsibility incurred directly or indirectly from attempting to build and/or use this frame.**
 
@@ -25,29 +25,30 @@ It is essential to fix these points securely to ensure safety of the frame. The 
 
 ## Construction of the base of the frame on the headboard of the bed
 
-Building the bottom brace of the frame:
+Building the bottom brace of the frame. The right side depicts the right bracket (right when facing the headboard from behind the bed).
 <p align="center">
   <img width=80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_4.JPG?raw=true" alt="None"/>
 </p>  
 
-You will need to use machine shop tools to fabricate the 1/8'' thick aluminum plates. I was able to get away with using a drill press, a band saw, and a table mounted belt sander. The specification diagram for the left bracket is shown below. The right bracket mirrors the left one. Here are my recommendations for machining each bracket:
-1. Cut out a rectangular piece of aluminum as large as the overall dimensions.
-2. 
-                                                                                                                                           
-                                                                                                                                           
-Aluminum plate on the bottom left side (when facing headboard from behind the bed):
-
-
+You will need to use machine shop tools to fabricate the 1/8'' thick aluminum plates. I was able to get away with using a drill press, a band saw, and a table mounted belt sander. The specification diagram for the left bracket is shown below (left when facing the headboard from behind the bed). The right bracket mirrors the left one.
                                                                                                                      <p align="center">
   <img width="80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_5.JPG?raw=true" alt="None"/>
 </p>  
-
-80/20 cut to size measurements:
+Here are my recommendations for machining each bracket:
+1. Cut out a rectangular piece of aluminum as large as the overall dimensions.
+2. Use a 15.4 mm diameter drillbit to bore the two holes that will later hook around the steel buttons.
+3. Use a mill or a bandsaw to cut the planar slots. 
+4. Use a file or a belt sander to file down the 90 degree corners on the slots. This will help the plate to fit around the steel buttons easier.
+5. Take a rubber mallet and hammer the plate around the steel buttons. If it fits snugly or you need to hammer it down a bit, that is good. It should not fit too loosely. 
+6. STOP. Do not got cut the holes for the M5 screws yet. you will do this after you build the horizontal bar that is shown below.
+7. Repeat for the other side. It should be very snug when you try to hammer on the second plate and slightly mar the aluminum, but as long as you can get it on without ruining the plates too much, it's OK.                                                                                                                                          
+Here are the horizontal bar and two smaller vertical bar dimensions. Cut the 80/20 stock to length.                 
 <p align="center">
   <img width="80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_6.JPG?raw=true" alt="None"/>
 </p>  
 
-Attaching the horizontal bar:
+Attach the 90 degree end feed fasteners (four per side) to the 80/20 framing. Then drill holes in the smaller 20mm end-feed fasteners for the flat head M5 screws. Drill and tap two holes per 20mm end feed fastener as shown below. Then find a way to put everything in place before tapping the end feed brackets for the M5 screws. I suggest duct tape. Make sure the horizontal bar is touching the four legs of the bed. Finally, while it is in place, use a fine tip sharpie and mark inside each of the tapped M5 holes on the end feed fastener, so that you put a black dot on the surface of the aluminum plate. Then, take the aluminum plates back off and drill holes where you marked with the sharpie. After you drill the holes, use a fillet bit to countersink them for the flat head screws. Then, install them on the frame and hook on both sides. 
+                                                                                                                                            
 <p align="center">
   <img width="80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_7.JPG?raw=true" alt="None"/>
 </p>  
