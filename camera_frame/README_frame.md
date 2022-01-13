@@ -11,8 +11,8 @@ See aluminum framing bill of materials in:
 
 **NOTE: These build instructions are provided "AS IS". Improper installation may result in serious injury to yourself or others, damage to your hardware, or damage to other objects in the vicinity. You are solely responsible for any damages or harm incurred while building this frame, using this frame, or any consequences thereof. Henry M. Clever and any party directly or indirectly involved with this project or build instructions accept no liability for damage, injury or any legal responsibility incurred directly or indirectly from attempting to build and/or use this frame.**
 
-## Hardware design for affixing the camera frame to the bedframe
-First let's inspect how the camera frame is attached to the bed. It is fixed to the back of the headboard.
+## Hardware design for mounting the camera frame to the bedframe
+First let's inspect how the camera frame is attached to the bed. It is mounted to the back of the headboard.
 <p align="center">
   <img width="70%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_2.JPG?raw=true" alt="None"/>
 </p>  
