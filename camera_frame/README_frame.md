@@ -7,7 +7,7 @@
 </p>  
 See aluminum framing bill of materials in:
 
-`BodyPressure/camera_frame/bill_of_materials_cameraframe.pdf`. You also need to get eight M5 flathead screws that are 1cm long.
+`BodyPressure/camera_frame/bill_of_materials_cameraframe.pdf`. You also need to get eight M5 flathead screws that are 1cm long, and some 1/8" aluminum plates. Overall, these instructions are quite high level and this is more challenging than building anything from IKEA. I suggest you look very carefully through all the instructions and diagrams before you start. Don't hesitate to ask questions by posting an issue on the repo.
 
 **NOTE: These build instructions are provided "AS IS". Improper installation may result in serious injury to yourself or others, damage to your hardware, or damage to other objects in the vicinity. You are solely responsible for any damages or harm incurred while building this frame, using this frame, or any consequences thereof. Henry M. Clever and any party directly or indirectly involved with this project or build instructions accept no liability for damage, injury or any legal responsibility incurred directly or indirectly from attempting to build and/or use this frame.**
 
@@ -59,12 +59,12 @@ Attach the 90 degree end feed fasteners (four per side) to the 80/20 framing. Th
   <img width="20%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_8.JPG?raw=true" alt="None"/>
 </p>  
 
-Connections of the A-frame braces:
+Here is a diagram depicting the A frame mount, which use four locking pivot joints and 30mm end feed fasteners to secure the frame to the bed.
 <p align="center">
   <img width="80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_9.JPG?raw=true" alt="None"/>
 </p>  
 
-80/20 cut to size measurements:
+Here are the 80/20 cut to size measurements. After you cut them to size, attach the locking pivot joints. Then attach the end feed fasteners to the A frame, and drill holes through the end feed fasteners and through the headboard of the bed to fit the large 1/4-20 screws. When you put the screws through and tighten a nut on the inside of the bed, I highly  suggest putting a piece of foam on the inside of the bed to cover up the nuts. This is where a person's head is in bed, so pad anything sharp and metal for safety.
 <p align="center">
   <img width="80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_10.JPG?raw=true" alt="None"/>
 </p>  
@@ -80,7 +80,7 @@ Connections of the overhang braces:
   <img width="80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_12.JPG?raw=true" alt="None"/>
 </p>  
 
-80/20 cut to size measurements:
+Here are the 80/20 cut to size measurements. Screw together the frame as depicted.
 <p align="center">
   <img width="80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_13.JPG?raw=true" alt="None"/>
 </p>  
@@ -92,7 +92,7 @@ Connections of the overhang braces:
   <img width="20%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_14.JPG?raw=true" alt="None"/>
 </p>  
 
-Connections of the camera attachment braces
+You will have to use CAD to create and 3D print a holster for your camera (e.g. Kinect or Intel Realsense). I no longer have the CAD file for the one below, and it's not a great design anyway, so you'll have to create one. My frame is designed so the camera is 1.6m from the surface of the bed, and the camera attachment is very hacked together (but sturdy). However, the SLP dataset camera is 2.1m from the surface of the bed, so you will have to wrangle the images around and if you build the frame the way I did. The networks NEED images that are 2.1m from the bed surface, which can be done in your code. Alternatively you could cut the 80/20 aluminum longer so the camera hangs 2.1m from the surface of the bed, but then it would not fit with typical 8-9 foot ceilings. If you create a CAD file for this that is 3D printable, I would appreciate it if you would send it to me so I can add it to this repo and then credit you for it.
 <p align="center">
   <img width="80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_15.JPG?raw=true" alt="None"/>
 </p>  
