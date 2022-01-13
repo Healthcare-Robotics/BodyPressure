@@ -14,24 +14,24 @@
 
 Four points where frame is fixed:
 <p align="center">
-  <img width="48%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_3.JPG?raw=true" alt="None"/>
+  <img width="100%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_3.JPG?raw=true" alt="None"/>
 </p>  
 
 ## Construction of the base of the frame on the headboard of the bed
 
 Building the bottom brace of the frame:
 <p align="center">
-  <img width="48%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_4.JPG?raw=true" alt="None"/>
+  <img width=60%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_4.JPG?raw=true" alt="None"/>
 </p>  
 
 Aluminum plate on the bottom left side (when facing headboard from behind the bed):
 <p align="center">
-  <img width="48%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_5.JPG?raw=true" alt="None"/>
+  <img width="80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_5.JPG?raw=true" alt="None"/>
 </p>  
 
 80/20 cut to size measurements:
 <p align="center">
-  <img width="48%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_6.JPG?raw=true" alt="None"/>
+  <img width="80%" src="https://github.com/Healthcare-Robotics/BodyPressure/blob/master/camera_frame/instructions_6.JPG?raw=true" alt="None"/>
 </p>  
 
 Attaching the horizontal bar:
