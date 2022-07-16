@@ -1,176 +1,31 @@
 Copyright (c) Henry M. Clever
 
 BODYPRESSURE: INFERRING BODY POSE AND CONTACT PRESSURE FROM A DEPTH IMAGE
-SOFTWARE LICENSE AGREEMENT
-RESEARCH USE ONLY
+SOFTWARE AND DATASET LICENSE AGREEMENT
 
-BY USING THIS SOFTWARE, YOU ARE AGREEING TO THE TERMS OF THIS LICENSE AGREEMENT.  IF YOU DO NOT AGREE WITH THESE TERMS, YOU MAY NOT USE THE SOFTWARE. NOTE 3rd PARTY LICENSES AT THE END OF THIS DOCUMENT.
+This license *ONLY APPLIES* to our code and not to the terms of third party software. See third party software below for details.
 
-This is a license agreement ("Agreement") between your organization or self (called "Licensee" or "You" in this Agreement) and Georgia Institute of Technology (called "Licensor" in this Agreement).  All rights not specifically granted to you in this Agreement are reserved for Licensor. 
+MIT License
 
+Copyright (c) Henry M. Clever
 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-JAVA RESEARCH LICENSE
-Version 1.6
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-I. DEFINITIONS.
-
-"Licensee" means You and any other party that has entered into and has
-in effect a version of this License.
-
-"Modifications" means any change or addition to the Technology.
-
-"Licensor" means Georgia Institute of Technology and its successors and assignees.
-
-"Research Use" means research, evaluation, or development for the
-purpose of advancing knowledge, teaching, learning, or customizing the
-Technology or Modifications for personal use. Research Use expressly
-excludes use or distribution for direct or indirect commercial
-(including strategic) gain or advantage.
-
-"Technology" means the source code and object code of the technology
-made available by the Licensor pursuant to this License.
-
-"Technology Site" means the website designated by the Licensor for accessing
-the Technology.
-
-"You" means the individual executing this License or the legal entity
-or entities represented by the individual executing this License.
-
-II. PURPOSE.
-
-The Licensor is licensing the Technology under this Java Research License (the
-"License") to promote research, education, innovation, and development
-using the Technology. This License is not intended to permit or
-enable access to the Technology for active consultation as part of
-creating an independent implementation of the Technology.
-
-COMMERCIAL USE AND DISTRIBUTION OF TECHNOLOGY AND MODIFICATIONS IS
-PERMITTED ONLY UNDER A GEORGIA TECH COMMERCIAL LICENSE.
-
-III. RESEARCH USE RIGHTS.
-
-A. License Grant. Subject to the conditions contained herein, Georgia Tech
-grants to You a non-exclusive, non-transferable, worldwide, and
-royalty-free license to do the following for Your Research Use only:
-
-1. Reproduce, create Modifications of, and use the Technology
-alone, or with Modifications;
-
-2. Share source code of the Technology alone, or with
-Modifications, with other Licensees; and
-
-3. Distribute object code of the Technology, alone, or with
-Modifications, to any third parties for Research Use only, under a
-license of Your choice that is consistent with this License; and
-publish papers and books discussing the Technology which may include
-relevant excerpts that do not in the aggregate constitute a
-significant portion of the Technology.
-
-B. Residual Rights. If You examine the Technology after accepting
-this License and remember anything about it later, You are not
-"tainted" in a way that would prevent You from creating or
-contributing to an independent implementation, but this License grants
-You no rights to Georgia Tech's copyrights or patents for use in such an
-implementation.
-
-C. No Implied Licenses. Other than the rights granted herein, Georgia Tech
-retains all rights, title, and interest in Technology, and You retain
-all rights, title, and interest in Your Modifications and associated
-specifications, subject to the terms of this License.
-
-D. Third Party Software. Portions of the Technology may be
-provided with licenses or other notices from third parties that govern
-the use of those portions. Any licenses granted hereunder do not alter
-any rights and obligations You may have under such licenses, however,
-the disclaimer of warranty and limitation of liability provisions in
-this License will apply to all Technology in this distribution.
-
-IV. INTELLECTUAL PROPERTY REQUIREMENTS
-
-As a condition to Your License, You agree to comply with the following
-restrictions and responsibilities:
-
-A. License and Copyright Notices. You must include a copy of this
-Java Research License in a Readme file for any Technology or
-Modifications you distribute. You must also include the following
-statement, "Use and distribution of this technology is subject to the
-Java Research License included herein", (a) once prominently in the
-source code tree and/or specifications for Your source code
-distributions, and (b) once in the same file as Your copyright or
-proprietary notices for Your binary code distributions. You must cause
-any files containing Your Modification to carry prominent notice
-stating that You changed the files. You must not remove or alter any
-copyright or other proprietary notices in the Technology.
-
-B. Licensee Exchanges. Any Technology and Modifications You
-receive from any Licensee are governed by this License.
-
-V. GENERAL TERMS.
-
-A. Disclaimer Of Warranties.
-
-THE TECHNOLOGY IS PROVIDED "AS IS", WITHOUT WARRANTIES OF ANY KIND,
-EITHER EXPRESS OR IMPLIED INCLUDING, WITHOUT LIMITATION, WARRANTIES
-THAT THE TECHNOLOGY IS FREE OF DEFECTS, MERCHANTABLE, FIT FOR A
-PARTICULAR PURPOSE, OR NON-INFRINGING OF THIRD PARTY RIGHTS. YOU
-AGREE THAT YOU BEAR THE ENTIRE RISK IN CONNECTION WITH YOUR USE AND
-DISTRIBUTION OF ANY AND ALL TECHNOLOGY UNDER THIS LICENSE.
-
-B. Infringement; Limitation Of Liability.
-
-1. If any portion of, or functionality implemented by, the
-Technology becomes the subject of a claim or threatened claim of
-infringement ("Affected Materials"), Georgia Tech may, in its unrestricted
-discretion, suspend Your rights to use and distribute the Affected
-Materials under this License. Such suspension of rights will be
-effective immediately upon Georgia Tech's posting of notice of suspension on
-the Technology Site.
-
-2. IN NO EVENT WILL GEORGIA TECH BE LIABLE FOR ANY DIRECT, INDIRECT,
-PUNITIVE, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES IN CONNECTION
-WITH OR ARISING OUT OF THIS LICENSE (INCLUDING, WITHOUT LIMITATION,
-LOSS OF PROFITS, USE, DATA, OR ECONOMIC ADVANTAGE OF ANY SORT),
-HOWEVER IT ARISES AND ON ANY THEORY OF LIABILITY (including
-negligence), WHETHER OR NOT GEORGIA HAS BEEN ADVISED OF THE POSSIBILITY OF
-SUCH DAMAGE. LIABILITY UNDER THIS SECTION V.B.2 SHALL BE SO LIMITED
-AND EXCLUDED, NOTWITHSTANDING FAILURE OF THE ESSENTIAL PURPOSE OF ANY
-REMEDY.
-
-C. Termination.
-
-1. You may terminate this License at any time by notifying Georgia Tech in a
-writing addressed to Georgia Tech Office of Legal Affairs, 760 Spring St. NW, STE 324,
-Atlanta, GA 30332.
-
-2. All Your rights will terminate under this License if You fail to
-comply with any of its material terms or conditions and do not cure
-such failure within thirty (30) days after becoming aware of such
-noncompliance.
-
-3. Upon termination, You must discontinue all uses and distribution
-under this agreement, and all provisions of this Section V ("General
-Terms") shall survive termination.
-
-D. Miscellaneous.
-
-1. Integration. This License represents the complete agreement of
-the parties concerning the subject matter hereof.
-
-2. Severability. If any provision of this License is held
-unenforceable, such provision shall be reformed to the extent
-necessary to make it enforceable unless to do so would defeat the
-intent of the parties, in which case, this License shall terminate.
-
-3. Governing Law. This License is governed by the laws of the
-United States and the State of Georgia, as applied to contracts
-entered into and performed in Georgia between Georgia residents.
-In no event shall this License be construed against the drafter.
-
-
-Read more about this license at http://java.net/jrl.csp 
-
-
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 
