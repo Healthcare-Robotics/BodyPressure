@@ -22,11 +22,6 @@ This repository:
 * Has instructions for testing BodyPressureWnet and BodyPressureBnet on real SLP data.
 * Has code for generating resting bodies, synthetic pressure images, and synthetic depth images with FleX, DartFleX, and pyRender.
 
-
-## License
-Please read the licenses carefully. Currently, we have research only and non-commercial licenses on this repository and on the BodyPressureSD dataset because we filed a provisional patent on the method to infer pressure underneath a person using a camera. We are actively looking for someone who is interested in commercializing this, so if you are, please contact `henryclever@gatech.edu`. If nothing comes of the provisional patent by the time it expires, we intend to make this repository as open-source as possible. The SLP-3Dfits data has an MIT license, and the code for it is in a different repo. Additionally, please note and be aware of all third party software licenses that apply.
-
-
 ## Getting started
 
 ### Setup code:
