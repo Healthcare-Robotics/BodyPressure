@@ -1,0 +1,9 @@
+
+data_BP/convnets/
+data_BP/model1est_real/
+data_BP/model1est_synth/
+data_BP/slp_real_cleaned/
+data_BP/SLP_SMPL_fits/
+data_BP/synth/
+data_BP/synth_depth/
+data_BP/results/
