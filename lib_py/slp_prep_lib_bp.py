@@ -18,8 +18,8 @@ import torch
 # from scipy.misc import imresize
 from scipy.ndimage.interpolation import zoom
 from scipy.ndimage.filters import gaussian_filter
-from preprocessing_lib_bp import PreprocessingLib
-import kinematics_lib_bp as kinematics_lib_br
+from lib_py.preprocessing_lib_bp import PreprocessingLib
+import lib_py.kinematics_lib_bp as kinematics_lib_br
 
 import cv2
 
@@ -39,7 +39,7 @@ HIGH_TAXEL_THRESH_X = (NUMOFTAXELS_X - 1)
 HIGH_TAXEL_THRESH_Y = (NUMOFTAXELS_Y - 1)
 
 
-txtfile = open("../FILEPATH.txt")
+txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
@@ -77,9 +77,11 @@ class SLPPrepLib():
         filter_pc = False
         if markers_gt_type == '3D':
             self.m_female = load_model(
-                '../../../git/SMPL_python_v.1.0.0/smpl/models/basicModel_f_lbs_10_207_0_v1.0.0.pkl')
+                # '../../../git/SMPL_python_v.1.0.0/smpl/models/basicModel_f_lbs_10_207_0_v1.0.0.pkl')
+                '/home/ganyong/Githubwork/Examples/BodyPressure/smpl/models/basicModel_f_lbs_10_207_0_v1.0.0.pkl')
             self.m_male = load_model(
-                '../../../git/SMPL_python_v.1.0.0/smpl/models/basicModel_m_lbs_10_207_0_v1.0.0.pkl')
+                # '../../../git/SMPL_python_v.1.0.0/smpl/models/basicModel_m_lbs_10_207_0_v1.0.0.pkl')
+                '/home/ganyong/Githubwork/Examples/BodyPressure/smpl/models/basicModel_m_lbs_10_207_0_v1.0.0.pkl')
 
         self.filter_pc = filter_pc
 
@@ -409,7 +411,7 @@ class SLPPrepLib():
         return dat
 
     def load_slp_gt_maps_est_maps(self, files, dat_slp, data_fp_suffix, depth_out_unet = False):
-        print(files)
+        # print(files)
         if depth_out_unet == False:
             items_to_transfer_est = ['angles_est','root_xyz_est','betas_est','root_atan2_est','mdm_est','cm_est','bed_vertical_shift_est']
             items_to_transfer_gt = ['mesh_depth','mesh_contact']

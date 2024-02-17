@@ -8,9 +8,9 @@ import torchvision
 import time
 
 
-from visualization_lib_bp import VisualizationLib
-from kinematics_lib_bp import KinematicsLib
-from mesh_depth_lib_bp import MeshDepthLib
+from lib_py.visualization_lib_bp import VisualizationLib
+from lib_py.kinematics_lib_bp import KinematicsLib
+from lib_py.mesh_depth_lib_bp import MeshDepthLib
 
 
 class SMPL_PMR(nn.Module):
@@ -31,7 +31,7 @@ class SMPL_PMR(nn.Module):
         #############################################################################
         #print mat_size
         self.loss_vector_type = loss_vector_type
-        print ('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+        # print ('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
 
         self.count = 0
 
@@ -41,13 +41,13 @@ class SMPL_PMR(nn.Module):
             self.GPU = True
             # Use for self.GPU
             dtype = torch.cuda.FloatTensor
-            print('######################### CUDA is available! #############################')
+            # print('######################### CUDA is available! #############################')
 
         else:
             self.GPU = False
             # Use for CPU
             dtype = torch.FloatTensor
-            print('############################## USING CPU #################################')
+            # print('############################## USING CPU #################################')
 
         self.dtype = dtype
 

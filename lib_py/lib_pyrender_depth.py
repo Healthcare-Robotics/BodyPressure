@@ -57,12 +57,18 @@ import os
 import lib_pyrender_functions as LPF
 
 
+from networks.logger import Colorlogger
+
+pth_log = '/home/ganyong/Githubwork/Examples/BodyPressure/networks/log_W_cover2_model2_v2vp_pmr_v2v.txt'
+logger = Colorlogger(pth_log)
+
 
 class pyRenderMesh():
     def __init__(self, render):
 
         # terms = 'f', 'frustum', 'background_image', 'overdraw', 'num_channels'
         # dterms = 'vc', 'camera', 'bgcolor'
+        self.v2vp_list = []
         self.first_pass = True
         self.render = render
         if True: #render == True:
@@ -327,10 +333,17 @@ class pyRenderMesh():
         RESULTS_DICT['vertex_pressure_list_abs_err'].append(list(np.abs(np.array(RESULTS_DICT['vertex_pressure_list_EST'][-1]) - np.array(RESULTS_DICT['vertex_pressure_list_GT'][-1]) )))
         RESULTS_DICT['vertex_pressure_list_sq_err'].append(list(np.square(np.array(RESULTS_DICT['vertex_pressure_list_EST'][-1]) - np.array(RESULTS_DICT['vertex_pressure_list_GT'][-1]) )))
 
-        print("v2vP error, mmHg squared", np.mean( RESULTS_DICT['vertex_pressure_list_sq_err'][-1]))
-        print("v2vP error, kPa squared", 133.32 * 133.32 * (1 / 1000000) * np.mean( RESULTS_DICT['vertex_pressure_list_sq_err'][-1]))
+        # print("v2vP error, mmHg squared", np.mean( RESULTS_DICT['vertex_pressure_list_sq_err'][-1]))
+        # print("v2vP error, kPa squared", 133.32 * 133.32 * (1 / 1000000) * np.mean( RESULTS_DICT['vertex_pressure_list_sq_err'][-1]))
 
+        
 
+        v2vp_error = 133.32 * 133.32 * (1 / 1000000) * np.mean( RESULTS_DICT['vertex_pressure_list_sq_err'][-1])
+        self.v2vp_list.append(v2vp_error)
+        # print("v2vP error, mmHg squared", np.mean( RESULTS_DICT['vertex_pressure_list_sq_err'][-1]))
+        logger.info("v2vP error, kPa squared: {}".format(self.v2vp_list))
+        # logger.info("v2vp error: {}".format(v2vp_list))
+        logger.info("v2vp mean:{}".format(np.mean(self.v2vp_list)))
 
 
 
