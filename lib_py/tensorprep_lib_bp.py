@@ -41,8 +41,6 @@ LOW_TAXEL_THRESH_Y = 0
 HIGH_TAXEL_THRESH_X = (NUMOFTAXELS_X - 1)
 HIGH_TAXEL_THRESH_Y = (NUMOFTAXELS_Y - 1)
 
-
-
 try:
     import cPickle as pkl
     def load_pickle(filename):
@@ -57,20 +55,26 @@ except:
 
 class TensorPrepLib():
 
+    def __init__(self, opt):
+        self.opt = opt
+        # self.opt_mod = 2
+        # self.opt_X_is = 'B'
+
     def load_files_to_database(self, database_file, creation_type, verbose = False, reduce_data = False, depth_in = False, test = False):
 
         # load in the training or testing files.  This may take a while.
         dat = None
+
         for ss_idx in range(len(database_file[0])):
 
             some_subject = database_file[0][ss_idx]
 
             if creation_type in some_subject:
-                print(creation_type, some_subject)
+                # print(creation_type, some_subject)
                 dat_curr = load_pickle(some_subject)
                 if depth_in == True:
                     dat_depth_curr = load_pickle(database_file[1][ss_idx])
-                    print('     ', database_file[1][ss_idx])
+                    # print('     ', database_file[1][ss_idx])
                     for key in dat_depth_curr:
                         dat_curr[key] = dat_depth_curr[key]
 
@@ -129,12 +133,14 @@ class TensorPrepLib():
                     im_ct += 1
 
         if dat_f_synth is not None:
+            # print('len(dat_f_synth[images]): {}'.format(len(dat_f_synth['images'])))
             for entry in range(len(dat_f_synth['images'])):
                 pimg = gaussian_filter(dat_f_synth['images'][entry].reshape(64, 27).astype(np.float32), sigma=filter_sigma)
                 pimg_mass = dat_f_synth['body_volume'][entry] * 62.5 / 0.06878933937454557
                 x[im_ct, start_map_idx, :, :] = pimg*((pimg_mass * 9.81) / (np.sum(pimg) * 0.0264 * 0.0286)) * (1 / 133.322)  # normalize by body mass and convert to mmHg
                 im_ct += 1
         if dat_m_synth is not None:
+            # print('len(dat_m_synth[images]): {}'.format(len(dat_m_synth['images'])))
             for entry in range(len(dat_m_synth['images'])):
                 pimg = gaussian_filter(dat_m_synth['images'][entry].reshape(64, 27).astype(np.float32), sigma = filter_sigma)
                 pimg_mass = dat_m_synth['body_volume'][entry] * 78.4 / 0.0828308574658067
@@ -155,67 +161,146 @@ class TensorPrepLib():
 
     def prep_reconstruction_input_est(self, x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, start_map_idx, cnn_type = 'resnet'):
         im_ct = 0
-        for dat in [dat_f_real, dat_m_real, dat_f_synth, dat_m_synth]:
-            if dat is not None:
-                for entry in range(len(dat['images'])):
-                    if cnn_type == 'resnet':
-                        mdm_est_neg = np.copy(dat['mdm_est'][entry])
-                        mdm_est_neg[mdm_est_neg > 0] = 0
-                        mdm_est_neg *= -1
-                        #reconstruction_input_est_list.append([mdm_est_neg, dat['cm_est'][entry]*100, ])
-                        x[im_ct, start_map_idx, :, :] = mdm_est_neg.astype(np.float32)
-                        x[im_ct, start_map_idx+1, :, :] =  dat['cm_est'][entry].astype(np.float32)*100
-                    elif cnn_type == 'resnetunet':
-                        x[im_ct, start_map_idx, :, :] =  dat['pimg_est'][entry].astype(np.float32)
-                    im_ct += 1
+        # print(self.opt.X_is, self.opt.mod)
+        if  self.opt.X_is== 'B' and self.opt.mod==2:
+            datset = {}
+            datset.update(dat_f_real)
+            datset.update(dat_m_real)
+            datset.update(dat_f_synth)
+            datset.update(dat_m_synth)
+
+            for dat in [datset]:
+                if dat is not None:
+                    for entry in range(len(dat['images'])):
+                        if cnn_type == 'resnet':
+                            mdm_est_neg = np.copy(dat['mdm_est'][entry])
+                            mdm_est_neg[mdm_est_neg > 0] = 0
+                            mdm_est_neg *= -1
+                            #reconstruction_input_est_list.append([mdm_est_neg, dat['cm_est'][entry]*100, ])
+                            x[im_ct, start_map_idx, :, :] = mdm_est_neg.astype(np.float32)
+                            x[im_ct, start_map_idx+1, :, :] =  dat['cm_est'][entry].astype(np.float32)*100
+                        elif cnn_type == 'resnetunet':
+                            # print(dat.keys())
+                            x[im_ct, start_map_idx, :, :] =  dat['pimg_est'][entry].astype(np.float32)
+                        im_ct += 1
+        else:
+            datset = [dat_f_real, dat_m_real, dat_f_synth, dat_m_synth] 
+            for dat in datset:
+                if dat is not None:
+                    for entry in range(len(dat['images'])):
+                        if cnn_type == 'resnet':
+                            mdm_est_neg = np.copy(dat['mdm_est'][entry])
+                            mdm_est_neg[mdm_est_neg > 0] = 0
+                            mdm_est_neg *= -1
+                            #reconstruction_input_est_list.append([mdm_est_neg, dat['cm_est'][entry]*100, ])
+                            x[im_ct, start_map_idx, :, :] = mdm_est_neg.astype(np.float32)
+                            x[im_ct, start_map_idx+1, :, :] =  dat['cm_est'][entry].astype(np.float32)*100
+                        elif cnn_type == 'resnetunet':
+                            # print(dat.keys())
+                            x[im_ct, start_map_idx, :, :] =  dat['pimg_est'][entry].astype(np.float32)
+                        im_ct += 1
+                
         return x
 
-
+    # opt need to change it manually for the B or W
     def prep_depth_input_images(self, x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, start_map_idx, depth_type = 'all_meshes', mix_bl_nobl = False, im_ct = 0):
         ct = 0
-        for dat in [dat_f_real, dat_m_real, dat_f_synth, dat_m_synth]:
-            if dat is not None:
-                for entry in range(len(dat['images'])):
-                    ct += 1
-                    if depth_type == 'all_meshes':
-                        #print(ct, "adding blanket")
-                        x[im_ct, start_map_idx+0, :, :] = dat['overhead_depthcam'][entry][0:64, 0:27].astype(np.float32)
-                        x[im_ct, start_map_idx+1, :, :] = dat['overhead_depthcam'][entry][0:64, 27:54].astype(np.float32)
-                        x[im_ct, start_map_idx+2, :, :] = dat['overhead_depthcam'][entry][64:128, 0:27].astype(np.float32)
-                        x[im_ct, start_map_idx+3, :, :] = dat['overhead_depthcam'][entry][64:128, 27:54].astype(np.float32)
-                        #print('appending blanketed')
-                        if mix_bl_nobl == True and ct >= 2: #with this we append 2/3 blanketed data and 1/3 without blanket
-                            depth_type = 'no_blanket'
-                            ct = 0
-                    elif depth_type == 'no_blanket':
-                        #print(ct, "no blanket")
-                        x[im_ct, start_map_idx+0, :, :] = dat['overhead_depthcam_noblanket'][entry][0:64, 0:27].astype(np.float32)
-                        x[im_ct, start_map_idx+1, :, :] = dat['overhead_depthcam_noblanket'][entry][0:64, 27:54].astype(np.float32)
-                        x[im_ct, start_map_idx+2, :, :] = dat['overhead_depthcam_noblanket'][entry][64:128, 0:27].astype(np.float32)
-                        x[im_ct, start_map_idx+3, :, :] = dat['overhead_depthcam_noblanket'][entry][64:128, 27:54].astype(np.float32)
-                        #print('appending noblanket')
-                        if mix_bl_nobl == True:
-                            depth_type = 'all_meshes'
-                            ct = 0
-                    elif depth_type == 'human_only':
-                        #x[im_ct, start_map_idx+0, :, :] = zoom(dat['overhead_depthcam_onlyhuman'][entry], 0.5).astype(np.float32)
-                        x[im_ct, start_map_idx+0, :, :] = dat['overhead_depthcam_onlyhuman'][entry][0:64, 0:27].astype(np.float32)
-                        x[im_ct, start_map_idx+1, :, :] = dat['overhead_depthcam_onlyhuman'][entry][0:64, 27:54].astype(np.float32)
-                        x[im_ct, start_map_idx+2, :, :] = dat['overhead_depthcam_onlyhuman'][entry][64:128, 0:27].astype(np.float32)
-                        x[im_ct, start_map_idx+3, :, :] = dat['overhead_depthcam_onlyhuman'][entry][64:128, 27:54].astype(np.float32)
-                    elif depth_type == 'blanket_only':
-                        x[im_ct, start_map_idx+0, :, :] = dat['overhead_depthcam_onlyblanket'][entry][0:64, 0:27].astype(np.float32)
-                        x[im_ct, start_map_idx+1, :, :] = dat['overhead_depthcam_onlyblanket'][entry][0:64, 27:54].astype(np.float32)
-                        x[im_ct, start_map_idx+2, :, :] = dat['overhead_depthcam_onlyblanket'][entry][64:128, 0:27].astype(np.float32)
-                        x[im_ct, start_map_idx+3, :, :] = dat['overhead_depthcam_onlyblanket'][entry][64:128, 27:54].astype(np.float32)
-                    elif depth_type == 'unet_est':
-                        x[im_ct, start_map_idx+0, :, :] = dat['dimg_est'][entry][0:64, 0:27].astype(np.float32)
-                        x[im_ct, start_map_idx+1, :, :] = dat['dimg_est'][entry][0:64, 27:54].astype(np.float32)
-                        x[im_ct, start_map_idx+2, :, :] = dat['dimg_est'][entry][64:128, 0:27].astype(np.float32)
-                        x[im_ct, start_map_idx+3, :, :] = dat['dimg_est'][entry][64:128, 27:54].astype(np.float32)
 
+        if  self.opt.X_is== 'B' and self.opt.mod==2:
+            datset = {}
+            datset.update(dat_f_real)
+            datset.update(dat_m_real)
+            datset.update(dat_f_synth)
+            datset.update(dat_m_synth)
 
-                    im_ct += 1
+            for dat in [datset]:
+                if dat is not None:
+                    for entry in range(len(dat['images'])):
+                        ct += 1
+                        if depth_type == 'all_meshes':
+                            #print(ct, "adding blanket")
+                            x[im_ct, start_map_idx+0, :, :] = dat['overhead_depthcam'][entry][0:64, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+1, :, :] = dat['overhead_depthcam'][entry][0:64, 27:54].astype(np.float32)
+                            x[im_ct, start_map_idx+2, :, :] = dat['overhead_depthcam'][entry][64:128, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+3, :, :] = dat['overhead_depthcam'][entry][64:128, 27:54].astype(np.float32)
+                            #print('appending blanketed')
+                            if mix_bl_nobl == True and ct >= 2: #with this we append 2/3 blanketed data and 1/3 without blanket
+                                depth_type = 'no_blanket'
+                                ct = 0
+                        elif depth_type == 'no_blanket':
+                            #print(ct, "no blanket")
+                            x[im_ct, start_map_idx+0, :, :] = dat['overhead_depthcam_noblanket'][entry][0:64, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+1, :, :] = dat['overhead_depthcam_noblanket'][entry][0:64, 27:54].astype(np.float32)
+                            x[im_ct, start_map_idx+2, :, :] = dat['overhead_depthcam_noblanket'][entry][64:128, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+3, :, :] = dat['overhead_depthcam_noblanket'][entry][64:128, 27:54].astype(np.float32)
+                            #print('appending noblanket')
+                            if mix_bl_nobl == True:
+                                depth_type = 'all_meshes'
+                                ct = 0
+                        elif depth_type == 'human_only':
+                            #x[im_ct, start_map_idx+0, :, :] = zoom(dat['overhead_depthcam_onlyhuman'][entry], 0.5).astype(np.float32)
+                            x[im_ct, start_map_idx+0, :, :] = dat['overhead_depthcam_onlyhuman'][entry][0:64, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+1, :, :] = dat['overhead_depthcam_onlyhuman'][entry][0:64, 27:54].astype(np.float32)
+                            x[im_ct, start_map_idx+2, :, :] = dat['overhead_depthcam_onlyhuman'][entry][64:128, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+3, :, :] = dat['overhead_depthcam_onlyhuman'][entry][64:128, 27:54].astype(np.float32)
+                        elif depth_type == 'blanket_only':
+                            x[im_ct, start_map_idx+0, :, :] = dat['overhead_depthcam_onlyblanket'][entry][0:64, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+1, :, :] = dat['overhead_depthcam_onlyblanket'][entry][0:64, 27:54].astype(np.float32)
+                            x[im_ct, start_map_idx+2, :, :] = dat['overhead_depthcam_onlyblanket'][entry][64:128, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+3, :, :] = dat['overhead_depthcam_onlyblanket'][entry][64:128, 27:54].astype(np.float32)
+                        elif depth_type == 'unet_est':
+                            x[im_ct, start_map_idx+0, :, :] = dat['dimg_est'][entry][0:64, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+1, :, :] = dat['dimg_est'][entry][0:64, 27:54].astype(np.float32)
+                            x[im_ct, start_map_idx+2, :, :] = dat['dimg_est'][entry][64:128, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+3, :, :] = dat['dimg_est'][entry][64:128, 27:54].astype(np.float32)
+
+                        im_ct += 1
+
+        else:
+            datset = [dat_f_real, dat_m_real, dat_f_synth, dat_m_synth] 
+
+            for dat in datset:
+                if dat is not None:
+                    for entry in range(len(dat['images'])):
+                        ct += 1
+                        if depth_type == 'all_meshes':
+                            #print(ct, "adding blanket")
+                            x[im_ct, start_map_idx+0, :, :] = dat['overhead_depthcam'][entry][0:64, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+1, :, :] = dat['overhead_depthcam'][entry][0:64, 27:54].astype(np.float32)
+                            x[im_ct, start_map_idx+2, :, :] = dat['overhead_depthcam'][entry][64:128, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+3, :, :] = dat['overhead_depthcam'][entry][64:128, 27:54].astype(np.float32)
+                            #print('appending blanketed')
+                            if mix_bl_nobl == True and ct >= 2: #with this we append 2/3 blanketed data and 1/3 without blanket
+                                depth_type = 'no_blanket'
+                                ct = 0
+                        elif depth_type == 'no_blanket':
+                            #print(ct, "no blanket")
+                            x[im_ct, start_map_idx+0, :, :] = dat['overhead_depthcam_noblanket'][entry][0:64, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+1, :, :] = dat['overhead_depthcam_noblanket'][entry][0:64, 27:54].astype(np.float32)
+                            x[im_ct, start_map_idx+2, :, :] = dat['overhead_depthcam_noblanket'][entry][64:128, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+3, :, :] = dat['overhead_depthcam_noblanket'][entry][64:128, 27:54].astype(np.float32)
+                            #print('appending noblanket')
+                            if mix_bl_nobl == True:
+                                depth_type = 'all_meshes'
+                                ct = 0
+                        elif depth_type == 'human_only':
+                            #x[im_ct, start_map_idx+0, :, :] = zoom(dat['overhead_depthcam_onlyhuman'][entry], 0.5).astype(np.float32)
+                            x[im_ct, start_map_idx+0, :, :] = dat['overhead_depthcam_onlyhuman'][entry][0:64, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+1, :, :] = dat['overhead_depthcam_onlyhuman'][entry][0:64, 27:54].astype(np.float32)
+                            x[im_ct, start_map_idx+2, :, :] = dat['overhead_depthcam_onlyhuman'][entry][64:128, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+3, :, :] = dat['overhead_depthcam_onlyhuman'][entry][64:128, 27:54].astype(np.float32)
+                        elif depth_type == 'blanket_only':
+                            x[im_ct, start_map_idx+0, :, :] = dat['overhead_depthcam_onlyblanket'][entry][0:64, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+1, :, :] = dat['overhead_depthcam_onlyblanket'][entry][0:64, 27:54].astype(np.float32)
+                            x[im_ct, start_map_idx+2, :, :] = dat['overhead_depthcam_onlyblanket'][entry][64:128, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+3, :, :] = dat['overhead_depthcam_onlyblanket'][entry][64:128, 27:54].astype(np.float32)
+                        elif depth_type == 'unet_est':
+                            x[im_ct, start_map_idx+0, :, :] = dat['dimg_est'][entry][0:64, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+1, :, :] = dat['dimg_est'][entry][0:64, 27:54].astype(np.float32)
+                            x[im_ct, start_map_idx+2, :, :] = dat['dimg_est'][entry][64:128, 0:27].astype(np.float32)
+                            x[im_ct, start_map_idx+3, :, :] = dat['dimg_est'][entry][64:128, 27:54].astype(np.float32)
+
+                        im_ct += 1
 
         #print ("depth array shape: ", np.shape(depth_images), np.max(depth_images))
         return x

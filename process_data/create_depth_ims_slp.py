@@ -19,7 +19,7 @@ import math
 from random import shuffle
 import pickle as pickle
 
-txtfile = open("../FILEPATH.txt")
+txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
@@ -33,10 +33,10 @@ sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 import time as time
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm #use cm.jet(list)
-from tensorprep_lib_bp import TensorPrepLib
-from preprocessing_lib_bp import PreprocessingLib
-from visualization_lib_bp import VisualizationLib
-from slp_prep_lib_bp import SLPPrepLib
+from lib_py.tensorprep_lib_bp import TensorPrepLib
+from lib_py.preprocessing_lib_bp import PreprocessingLib
+from lib_py.visualization_lib_bp import VisualizationLib
+from lib_py.slp_prep_lib_bp import SLPPrepLib
 
 def load_pickle(filename):
     with open(filename, 'rb') as f:
@@ -561,7 +561,7 @@ if __name__ == '__main__':
         CTRL_PNL['depth_out_unet'] = False
 
 
-        dana_lab_path = FILEPATH+"data_BP/SLP/danaLab/"
+        dana_lab_path = "/mnt/DADES2/SLP/SLP/danaLab/"
 
         load_real = False
         if load_real == True:

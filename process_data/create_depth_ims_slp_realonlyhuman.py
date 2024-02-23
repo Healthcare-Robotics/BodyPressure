@@ -1,7 +1,7 @@
 
 
 
-txtfile = open("../FILEPATH.txt")
+txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
@@ -36,10 +36,10 @@ import pickle as pickle
 import time as time
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm #use cm.jet(list)
-from tensorprep_lib_bp import TensorPrepLib
-from preprocessing_lib_bp import PreprocessingLib
-from visualization_lib_bp import VisualizationLib
-from slp_prep_lib_bp import SLPPrepLib
+from lib_py.tensorprep_lib_bp import TensorPrepLib
+from lib_py.preprocessing_lib_bp import PreprocessingLib
+from lib_py.visualization_lib_bp import VisualizationLib
+from lib_py.slp_prep_lib_bp import SLPPrepLib
 
 def load_pickle(filename):
     with open(filename, 'rb') as f:
@@ -385,7 +385,7 @@ if __name__ == '__main__':
         subj_mass_list_f = []
         some_subject = '%05d' % float(i)
         if i == 7: continue
-        phys_arr = np.load(FILEPATH+'data_BP/SLP/danaLab/physiqueData.npy')
+        phys_arr = np.load('/mnt/DADES2/SLP/SLP/danaLab/physiqueData.npy')
         phys_arr[:, [2, 0]] = phys_arr[:, [0, 2]]
         gender_bin = int(phys_arr[int(i) - 1][2])
         if gender_bin == 1:
@@ -417,7 +417,7 @@ if __name__ == '__main__':
 
 
 
-        dana_lab_path = FILEPATH+"data_BP/SLP/danaLab/"
+        dana_lab_path = "/mnt/DADES2/SLP/SLP/danaLab/"
 
         dat_f_real = {}
         dat_f_real_u = SLPPrepLib().load_slp_files_to_database(database_file_f, dana_lab_path, PM='uncover', depth='uncover', mass_ht_list = subj_mass_list_f, markers_gt_type = '3D', use_pc = False, pm_adjust_mm = [12, -35])

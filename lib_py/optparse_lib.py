@@ -26,7 +26,7 @@ def get_depthnet_options(p):
     p.add_option('--prev_device', action='store', type = 'int', dest='prev_device', default=0,
                  help='Choose a GPU core that it was previously on.')
 
-    p.add_option('--device', action='store', type = 'int', dest='device', default=0,
+    p.add_option('--device', action='store', type = 'int', dest='device', default=1,
                  help='Choose a GPU core.')
 
     p.add_option('--qt', action='store_true', dest='quick_test', default=False,
@@ -62,13 +62,13 @@ def get_depthnet_options(p):
     p.add_option('--half_shape_wt', action='store_true', dest='half_shape_wt', default=False,
                  help='Half betas.')
 
-    p.add_option('--slp', action='store', type = 'string', dest='slp', default='none',
+    p.add_option('--slp', action='store', type = 'string', dest='slp', default='mixedreal',
                  help='Train on SLP 2D targets.')
 
     p.add_option('--nosmpl', action='store_true', dest='nosmpl', default=False,
                  help='Remove SMPL from loss.')
 
-    p.add_option('--v2v', action='store_true', dest='v2v', default=False,
+    p.add_option('--v2v', action='store_true', dest='v2v', default=True,
                  help='Use a per vertex loss.')
 
     p.add_option('--train_only_betanet', action='store_true', dest='train_only_betanet', default=False,
@@ -101,6 +101,6 @@ def get_depthnet_options(p):
     p.add_option('--verbose', '--v',  action='store_true', dest='verbose',
                  default=True, help='Printout everything (under construction).')
 
-    p.add_option('--log_interval', type=int, default=200, metavar='N',
+    p.add_option('--log_interval', type=int, default=400, metavar='N',
                  help='number of batches between logging train status') #if you visualize too often it will slow down training.
     return p

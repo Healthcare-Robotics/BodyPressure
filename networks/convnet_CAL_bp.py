@@ -8,8 +8,8 @@ import torchvision
 import time
 
 
-from visualization_lib_bp import VisualizationLib
-from kinematics_lib_bp import KinematicsLib
+from lib_py.visualization_lib_bp import VisualizationLib
+from lib_py.kinematics_lib_bp import KinematicsLib
 
 
 class CNN(nn.Module):
@@ -59,7 +59,7 @@ class CNN(nn.Module):
             self.GPU = True
             # Use for self.GPU
             dtype = torch.cuda.FloatTensor
-            print('######################### CUDA is available! #############################')
+            # print('######################### CUDA is available! #############################')
             if CTRL_PNL['CNN'] == 'resnetunet':
                 self.resnet_zeros = torch.Tensor(np.ones((128, in_channels, 128, 5))).type(torch.cuda.FloatTensor)
             if CTRL_PNL['CNN'] == 'resnet':
@@ -77,7 +77,7 @@ class CNN(nn.Module):
             self.GPU = False
             # Use for CPU
             dtype = torch.FloatTensor
-            print('############################## USING CPU #################################')
+            # print('############################## USING CPU #################################')
             if CTRL_PNL['CNN'] == 'resnetunet':
                 self.resnet_zeros = torch.Tensor(np.zeros((128, in_channels, 128, 5))).type(torch.FloatTensor)
             if CTRL_PNL['CNN'] == 'resnet':

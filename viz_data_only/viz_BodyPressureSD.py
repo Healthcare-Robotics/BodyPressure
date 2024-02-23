@@ -9,7 +9,7 @@
 
 
 
-txtfile = open("../FILEPATH.txt")
+txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
@@ -48,12 +48,12 @@ import lib_basic_2Dviz as libPyBasic2D
 
 import optparse
 
-from visualization_lib_bp import VisualizationLib
-from preprocessing_lib_bp import PreprocessingLib
-from tensorprep_lib_bp import TensorPrepLib
-from unpack_depth_batch_lib_bp import UnpackDepthBatchLib
-import kinematics_lib_bp as kinematics_lib_br
-from slp_prep_lib_bp import SLPPrepLib
+from lib_py.visualization_lib_bp import VisualizationLib
+from lib_py.preprocessing_lib_bp import PreprocessingLib
+from lib_py.tensorprep_lib_bp import TensorPrepLib
+from lib_py.unpack_depth_batch_lib_bp import UnpackDepthBatchLib
+import lib_py.kinematics_lib_bp as kinematics_lib_br
+from lib_py.slp_prep_lib_bp import SLPPrepLib
 
 
 try:
@@ -145,8 +145,8 @@ class Viz3DPose():
 
     def evaluate_data(self, test_files_f, test_files_m):
 
-        test_dat_f_synth = TensorPrepLib().load_files_to_database(test_files_f, creation_type='synth', reduce_data=False, depth_in=True)
-        test_dat_m_synth = TensorPrepLib().load_files_to_database(test_files_m, creation_type='synth', reduce_data=False, depth_in=True)
+        test_dat_f_synth = TensorPrepLib(opt=self.opt).load_files_to_database(test_files_f, creation_type='synth', reduce_data=False, depth_in=True)
+        test_dat_m_synth = TensorPrepLib(opt=self.opt).load_files_to_database(test_files_m, creation_type='synth', reduce_data=False, depth_in=True)
 
         x_map_ct = 5
         pmat_gt_idx = 0
@@ -173,19 +173,19 @@ class Viz3DPose():
 
         test_x = np.zeros((len_f + len_m, x_map_ct, 64, 27)).astype(np.float32)
         #allocate pressure images
-        test_x = TensorPrepLib().prep_images(test_x, None, None, test_dat_f_synth, test_dat_m_synth, filter_sigma = 0.5, start_map_idx = pmat_gt_idx)
+        test_x = TensorPrepLib(opt=self.opt).prep_images(test_x, None, None, test_dat_f_synth, test_dat_m_synth, filter_sigma = 0.5, start_map_idx = pmat_gt_idx)
 
 
         self.mesh_reconstruction_maps = None
         self.reconstruction_maps_input_est = None
 
-        test_x_nobl = TensorPrepLib().prep_depth_input_images(test_x, None, None, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx, depth_type = 'no_blanket', mix_bl_nobl = False)
-        test_x = TensorPrepLib().prep_depth_input_images(test_x, None, None, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx, depth_type = 'all_meshes', mix_bl_nobl = False)
+        test_x_nobl = TensorPrepLib(opt=self.opt).prep_depth_input_images(test_x, None, None, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx, depth_type = 'no_blanket', mix_bl_nobl = False)
+        test_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(test_x, None, None, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx, depth_type = 'all_meshes', mix_bl_nobl = False)
 
 
         test_y_flat = []  # Initialize the ground truth listhave
         for gender_synth in [["f", test_dat_f_synth], ["m", test_dat_m_synth]]:
-            test_y_flat = TensorPrepLib().prep_labels(test_y_flat, gender_synth[1],
+            test_y_flat = TensorPrepLib(opt=self.opt).prep_labels(test_y_flat, gender_synth[1],
                                                         z_adj = -0.075, gender = gender_synth[0], is_synth = True,
                                                         loss_vector_type = 'anglesDC',
                                                         initial_angle_est = False, x_y_adjust_mm = self.CTRL_PNL['x_y_offset_synth'])

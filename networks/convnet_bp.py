@@ -8,9 +8,9 @@ import torchvision
 import time
 
 
-from visualization_lib_bp import VisualizationLib
-from kinematics_lib_bp import KinematicsLib
-from mesh_depth_lib_bp import MeshDepthLib
+from lib_py.visualization_lib_bp import VisualizationLib
+from lib_py.kinematics_lib_bp import KinematicsLib
+from lib_py.mesh_depth_lib_bp import MeshDepthLib
 
 from resnet import resnet34 as ResNet34
 #from resnet import resnet50 as ResNet50
@@ -37,7 +37,7 @@ class CNN(nn.Module):
         #############################################################################
         #print mat_size
         self.loss_vector_type = loss_vector_type
-        print ('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+        # print ('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
 
         self.count = 0
 
@@ -104,7 +104,7 @@ class CNN(nn.Module):
             self.GPU = True
             # Use for self.GPU
             dtype = torch.cuda.FloatTensor
-            print('######################### CUDA is available! #############################')
+            # logger.info('######################### CUDA is available! #############################')
             if CTRL_PNL['CNN'] == 'resnetunet':
                 self.resnet_zeros = torch.Tensor(np.ones((128, in_channels, 128, 5))).type(torch.cuda.FloatTensor)
 
@@ -112,7 +112,7 @@ class CNN(nn.Module):
             self.GPU = False
             # Use for CPU
             dtype = torch.FloatTensor
-            print('############################## USING CPU #################################')
+            # print('############################## USING CPU #################################')
             if CTRL_PNL['CNN'] == 'resnetunet':
                 self.resnet_zeros = torch.Tensor(np.zeros((128, in_channels, 128, 5))).type(torch.FloatTensor)
 

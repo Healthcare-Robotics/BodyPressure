@@ -6,7 +6,7 @@ import trimesh
 import pyrender
 
 
-txtfile = open("../FILEPATH.txt")
+txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
@@ -408,7 +408,8 @@ if __name__ == "__main__":
 
 
 
-    phys_arr = np.load(filepath_prefix+'/git/BodyPressure/data_BP/SLP/danaLab/physiqueData.npy')
+    # phys_arr = np.load(filepath_prefix+'/git/BodyPressure/data_BP/SLP/danaLab/physiqueData.npy')
+    phys_arr = np.load('/mnt/DADES2/SLP/SLP/danaLab/physiqueData.npy')
     phys_arr[:, [2, 0]] = phys_arr[:, [0, 2]]
     gender_bin = phys_arr[some_subject_int - 1][2]
     if int(gender_bin) == 1:

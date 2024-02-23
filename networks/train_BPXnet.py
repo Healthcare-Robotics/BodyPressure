@@ -15,6 +15,9 @@ import torch.optim as optim
 from torchvision import transforms
 from torch.autograd import Variable
 
+from tqdm import tqdm
+from logger import Colorlogger
+
 
 try:
     import cPickle as pkl
@@ -28,7 +31,7 @@ except:
             return pkl.load(f, encoding = 'latin1')
 
 
-txtfile = open("../FILEPATH.txt")
+txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
@@ -37,7 +40,7 @@ import sys
 sys.path.insert(0, '../lib_py')
 sys.path.insert(-1,FILEPATH+'smpl/smpl_webuser3')
 sys.path.insert(-1,FILEPATH)
-sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
+# sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 #sys.path.remove('/home/henry/git/pytorch_HMR/src')
 
 print(sys.path)
@@ -51,11 +54,11 @@ import betanet_bp as betanet
 # import tf.transformations as tft
 
 # Pose Estimation Libraries
-from visualization_lib_bp import VisualizationLib
-from tensorprep_lib_bp import TensorPrepLib
-from unpack_depth_batch_lib_bp import UnpackDepthBatchLib
-from filename_input_lib_bp import FileNameInputLib
-from slp_prep_lib_bp import SLPPrepLib
+from lib_py.visualization_lib_bp import VisualizationLib
+from lib_py.tensorprep_lib_bp import TensorPrepLib
+from lib_py.unpack_depth_batch_lib_bp import UnpackDepthBatchLib
+from lib_py.filename_input_lib_bp import FileNameInputLib
+from lib_py.slp_prep_lib_bp import SLPPrepLib
 
 
 import random
@@ -78,21 +81,26 @@ torch.set_num_threads(1)
 if torch.cuda.is_available():
     # Use for GPU
     GPU = True
+
     dtype = torch.cuda.FloatTensor
     dtypeLong = torch.cuda.LongTensor
-    print ('######################### CUDA is available! #############################')
+    
+    # print ('######################### CUDA is available! #############################')
+    # logger.info('############ CUDA IS AVAILABLE ############')
 else:
     # Use for CPU
     GPU = False
     dtype = torch.FloatTensor
     dtypeLong = torch.LongTensor
-    print ('############################## USING CPU #################################')
+    # print ('############################## USING CPU #################################')
+    # logger.info('############ USING CPU ############')
 
 
 class PhysicalTrainer():
 
-    def __init__(self, train_files_f, train_files_m, test_files_f, test_files_m, opt):
+    def __init__(self, train_files_f, train_files_m, test_files_f, test_files_m, opt, logger):
 
+        self.logger = logger
         self.CTRL_PNL = {}
         if opt.train_only_CAL == True or opt.train_only_betanet == True:
             self.CTRL_PNL['num_epochs'] = 500
@@ -102,10 +110,10 @@ class PhysicalTrainer():
             self.CTRL_PNL['num_epochs'] = 100
         elif opt.mod == 2:
             self.CTRL_PNL['num_epochs'] = 40
+            
+        self.logger.info('num_epochs = {}'.format(self.CTRL_PNL['num_epochs']))
 
         self.opt = opt
-
-
 
         if opt.X_is == 'W':
             self.CTRL_PNL['CNN'] = 'resnet'
@@ -117,14 +125,16 @@ class PhysicalTrainer():
             self.CTRL_PNL['onlyhuman_labels'] = True
         else:
             print('you need to select a valid X_is. choose "W" for white box net or "B" for black box net.')
+            
             sys.exit()
-
+        
+        logger.info('X_is == {}'.format(self.opt.X_is))
 
         self.CTRL_PNL['mod'] = opt.mod
         self.CTRL_PNL['nosmpl'] = opt.nosmpl
         self.CTRL_PNL['loss_vector_type'] = opt.losstype
         self.CTRL_PNL['verbose'] = opt.verbose
-        self.CTRL_PNL['batch_size'] = 128
+        self.CTRL_PNL['batch_size'] = 64
         self.CTRL_PNL['incl_inter'] = True
         self.CTRL_PNL['shuffle'] = True
         self.CTRL_PNL['double_network_size'] = False
@@ -148,6 +158,8 @@ class PhysicalTrainer():
         self.CTRL_PNL['noloss_htwt'] = opt.noloss_htwt
         self.CTRL_PNL['mesh_recon_map_labels'] = opt.pmr #can only be true if we have 100% synthetic data for training
         self.CTRL_PNL['mesh_recon_map_labels_test'] = opt.pmr #False #can only be true is we have 100% synth for testing
+        # self.CTRL_PNL['mesh_recon_map_labels'] = False
+        # self.CTRL_PNL['mesh_recon_map_labels_test'] = False 
         self.CTRL_PNL['mesh_recon_map_output'] = self.CTRL_PNL['mesh_recon_map_labels']
         self.CTRL_PNL['mesh_recon_output'] = self.CTRL_PNL['mesh_recon_map_output']
         if opt.v2v == True: self.CTRL_PNL['mesh_recon_output'] = True
@@ -257,6 +269,7 @@ class PhysicalTrainer():
             elif self.opt.slp == 'mixedreal':
                 #train_x = np.zeros((85114+135*69, x_map_ct, 64, 27)).astype(np.float32)
                 train_x = np.zeros((97495+135*79, x_map_ct, 64, 27)).astype(np.float32)
+                self.logger.info('Train_x = mixedreal')
 
 
         #load training ysnth data
@@ -313,76 +326,108 @@ class PhysicalTrainer():
             dat_f_synth = None
             dat_m_synth = None
         else:
-            dat_f_synth = TensorPrepLib().load_files_to_database(train_files_f[1:2]+train_files_f[3:4], creation_type = 'synth', reduce_data = reduce_data, depth_in = True)
-            dat_m_synth = TensorPrepLib().load_files_to_database(train_files_m[1:2]+train_files_m[3:4], creation_type = 'synth', reduce_data = reduce_data, depth_in = True)
+            dat_f_synth = TensorPrepLib(opt=self.opt).load_files_to_database(train_files_f[1:2]+train_files_f[3:4], creation_type = 'synth', reduce_data = reduce_data, depth_in = True)
+            dat_m_synth = TensorPrepLib(opt=self.opt).load_files_to_database(train_files_m[1:2]+train_files_m[3:4], creation_type = 'synth', reduce_data = reduce_data, depth_in = True)
+            self.logger.info('loaded train synth data ... ')
 
         #allocate pressure images
-        train_x = TensorPrepLib().prep_images(train_x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, filter_sigma = 0.5, start_map_idx = pmat_gt_idx)
+        train_x = TensorPrepLib(opt=self.opt).prep_images(train_x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, filter_sigma = 0.5, start_map_idx = pmat_gt_idx)
+        self.logger.info('type of train_x = {}'.format(type(train_x)))
 
 
 
         if self.CTRL_PNL['mesh_recon_map_labels'] == True:
             #Initialize the precomputed depth and contact maps.
-            train_x = TensorPrepLib().prep_reconstruction_gt(train_x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, start_map_idx = recon_gt_idx)
+            train_x = TensorPrepLib(opt=self.opt).prep_reconstruction_gt(train_x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, start_map_idx = recon_gt_idx)
 
         if self.CTRL_PNL['recon_map_input_est'] == True:
             #Initialize the precomputed depth and contact map input estimates
-            train_x = TensorPrepLib().prep_reconstruction_input_est(train_x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, start_map_idx = 0, cnn_type = self.CTRL_PNL['CNN'])
+            train_x = TensorPrepLib(opt=self.opt).prep_reconstruction_input_est(train_x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, start_map_idx = 0, cnn_type = self.CTRL_PNL['CNN'])
 
 
 
         im_ct = 0
-        if self.opt.slp == 'real' or self.opt.slp == 'mixedreal':
-            train_x = TensorPrepLib().prep_depth_input_images(train_x, dat_f_real, dat_m_real, None, None, start_map_idx = depth_in_idx, depth_type = 'all_meshes')
-            im_ct = len(dat_f_real['images']) + len(dat_m_real['images'])
-        if self.opt.slp != 'real':
-            if self.opt.no_blanket == False:
-               train_x = TensorPrepLib().prep_depth_input_images(train_x, None, None, dat_f_synth, dat_m_synth, start_map_idx = depth_in_idx, depth_type = 'all_meshes', mix_bl_nobl = True, im_ct = im_ct) #'all_meshes')#'
-            else:
-               train_x = TensorPrepLib().prep_depth_input_images(train_x, None, None, dat_f_synth, dat_m_synth, start_map_idx = depth_in_idx, depth_type = 'no_blanket', mix_bl_nobl = False, im_ct = im_ct) #'all_meshes')#'
+        # for the W case
+        
+        if opt.X_is == 'B' and opt.mod==2:
 
+            if self.CTRL_PNL['depth_out_unet'] == True and self.CTRL_PNL['mod'] == 1:
+                train_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(train_x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, start_map_idx = depth_in_idx+4, depth_type = 'human_only')
+                self.logger.info('train_x with depth_out_unet true')
+            if self.CTRL_PNL['depth_out_unet'] == True and self.CTRL_PNL['mod'] == 2:
+                train_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(train_x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, start_map_idx = depth_in_idx+8, depth_type = 'unet_est')
+                self.logger.info('train_x with depth_out_unet true and mod==2')
 
-        if self.CTRL_PNL['depth_out_unet'] == True:
-            train_x = TensorPrepLib().prep_depth_input_images(train_x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, start_map_idx = depth_in_idx+4, depth_type = 'human_only')
+        else:
+            if self.opt.slp == 'real' or self.opt.slp == 'mixedreal':
+                train_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(train_x, dat_f_real, dat_m_real, None, None, start_map_idx = depth_in_idx, depth_type = 'all_meshes')
+                im_ct = len(dat_f_real['images']) + len(dat_m_real['images'])
+                self.logger.info('length of im_ct = {}'.format(im_ct))
+            if self.opt.slp != 'real':
+                if self.opt.no_blanket == False:
+                    train_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(train_x, None, None, dat_f_synth, dat_m_synth, start_map_idx = depth_in_idx, depth_type = 'all_meshes', mix_bl_nobl = True, im_ct = im_ct) #'all_meshes')#'
+                    self.logger.info('train_x without blanket ....')
+                else:
+                    train_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(train_x, None, None, dat_f_synth, dat_m_synth, start_map_idx = depth_in_idx, depth_type = 'no_blanket', mix_bl_nobl = False, im_ct = im_ct) #'all_meshes')#'
+                    self.logger.info('train_x with blanket ....')
 
-        if self.CTRL_PNL['depth_out_unet'] == True and self.CTRL_PNL['mod'] == 2:
-            train_x = TensorPrepLib().prep_depth_input_images(train_x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, start_map_idx = depth_in_idx+8, depth_type = 'unet_est')
-
-        for i in range(x_map_ct):
-            print(i, np.max(train_x[:, i, :, :]), np.std(train_x[:, i, :, :]), train_x.dtype)
-
+            if self.CTRL_PNL['depth_out_unet'] == True:
+                train_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(train_x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, start_map_idx = depth_in_idx+4, depth_type = 'human_only')
+                self.logger.info('train_x with depth_out_unet true')
+            if self.CTRL_PNL['depth_out_unet'] == True and self.CTRL_PNL['mod'] == 2:
+                train_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(train_x, dat_f_real, dat_m_real, dat_f_synth, dat_m_synth, start_map_idx = depth_in_idx+8, depth_type = 'unet_est')
+                self.logger.info('train_x with depth_out_unet true and mod==2')
+            # for i in range(x_map_ct):
+            #     print(i, np.max(train_x[:, i, :, :]), np.std(train_x[:, i, :, :]), train_x.dtype)
+                
         self.train_x_tensor = torch.Tensor(train_x) #this converts the int16/short array to a float32 tensor. idk how to fix this yet.
 
 
 
 
+
         train_y_flat = []  # Initialize the training ground truth list
+
+
         if self.opt.slp == 'real' or self.opt.slp == 'mixedreal':
             for gender_synth in [["f", dat_f_real], ["m", dat_m_real]]:
                 train_y_flat = SLPPrepLib().prep_labels_slp(train_y_flat, gender_synth[1], num_repeats = 1,
                                                                 z_adj = -0.075, gender = gender_synth[0], is_synth = True,
                                                                 markers_gt_type = '3D',
-                                                                initial_angle_est = self.CTRL_PNL['adjust_ang_from_est'],
+                                                                # initial_angle_est = self.CTRL_PNL['adjust_ang_from_est'], 
                                                                 cnn_type = self.CTRL_PNL['CNN'])
+            
+            self.logger.info('loaded the real train_y_flat !!')
+    
         if self.opt.slp != 'real':
             for gender_synth in [["f", dat_f_synth], ["m", dat_m_synth]]:
-                train_y_flat = TensorPrepLib().prep_labels(train_y_flat, gender_synth[1],
+                train_y_flat = TensorPrepLib(opt=self.opt).prep_labels(train_y_flat, gender_synth[1],
                                                                 z_adj = -0.075, gender = gender_synth[0], is_synth = True,
                                                                 loss_vector_type = self.CTRL_PNL['loss_vector_type'],
                                                                 initial_angle_est = self.CTRL_PNL['adjust_ang_from_est'],
                                                                 cnn_type = self.CTRL_PNL['CNN'], x_y_adjust_mm = self.CTRL_PNL['x_y_offset_synth'])
+            self.logger.info('loaded the synth train_y_flat !!')
             del dat_f_synth
             del dat_m_synth
+    
 
+        
+        # self.logger.info('train_y_flat shape: {}'.format(train_y_flat))
+        logger.info("type of train_y_flat: {}".format(type(train_y_flat)))
 
+        # if opt.X_is == 'B' and opt.mod == 2: 
+            # self.train_y_tensor = torch.from_numpy(train_y_flat)
+            # for the error: cannot convert the np.ndarray of np.object_
+        max_length = max(len(arr) for arr in train_y_flat)
+        padded_arrays = [np.pad(arr, (0, max_length - len(arr)), 'constant') for arr in train_y_flat]
 
-        train_y_flat = np.array(train_y_flat)
+        train_y_flat = np.vstack(padded_arrays)
 
         self.train_y_tensor = torch.Tensor(train_y_flat)
-
-
-
-
+        
+        # else:
+        #     train_y_flat = np.array(train_y_flat)
+        #     self.train_y_tensor = torch.Tensor(train_y_flat)
 
 
         #################################### PREP TESTING DATA ##########################################
@@ -405,7 +450,7 @@ class PhysicalTrainer():
 
         if self.opt.pmr == True:
             test_dat_f_real = SLPPrepLib().load_slp_gt_maps_est_maps(test_files_f[0], test_dat_f_real, FileNameInputLib1.data_fp_suffix, depth_out_unet = self.CTRL_PNL['depth_out_unet'])
-
+            self.logger.info('test_dat_f_real with pmr == true ... ')
         test_dat_m_real = {}
         test_dat_m_real_u = SLPPrepLib().load_slp_files_to_database(test_files_m[0], dana_lab_path, PM='uncover', depth='uncover', mass_ht_list = test_subj_mass_list_m, markers_gt_type = '3D', use_pc = False, depth_out_unet = self.CTRL_PNL['depth_out_unet'], pm_adjust_mm = self.CTRL_PNL['x_y_offset_synth'])
         test_dat_m_real_c1 = SLPPrepLib().load_slp_files_to_database(test_files_m[0], dana_lab_path, PM='cover1', depth='cover1', mass_ht_list = test_subj_mass_list_m, markers_gt_type = '3D', use_pc = False, depth_out_unet = self.CTRL_PNL['depth_out_unet'], pm_adjust_mm = self.CTRL_PNL['x_y_offset_synth'])
@@ -424,83 +469,150 @@ class PhysicalTrainer():
 
         if self.opt.pmr == True:
             test_dat_m_real = SLPPrepLib().load_slp_gt_maps_est_maps(test_files_m[0], test_dat_m_real, FileNameInputLib1.data_fp_suffix, depth_out_unet = self.CTRL_PNL['depth_out_unet'])
+            self.logger.info('test_dat_m_real with pmr == ture ... ')
 
-
-
-        test_dat_f_synth = None
-        test_dat_m_synth = None
-
-
+        if self.opt.X_is == 'W':
+            test_dat_f_synth = None
+            test_dat_m_synth = None
+            self.logger.info('test_data_synth == None')
+        
+        if self.opt.X_is == 'B':
+            self.logger.info('test_files_f len: {}'.format(len(test_files_f)))
+            test_dat_f_synth = TensorPrepLib(opt=self.opt).load_files_to_database(test_files_f[1:2]+test_files_f[3:4], creation_type = 'synth', reduce_data = reduce_data, depth_in = True)
+            test_dat_m_synth = TensorPrepLib(opt=self.opt).load_files_to_database(test_files_m[1:2]+test_files_m[3:4], creation_type = 'synth', reduce_data = reduce_data, depth_in = True)
+            self.logger.info('loaded test synth data ... ')
 
 
         if self.opt.quick_test == True:
             test_x = np.zeros((135*1, x_map_ct, 64, 27)).astype(np.float32)
-        else:
+        elif self.opt.X_is=='B' and self.opt.mod==2:
             #test_x = np.zeros((135*10, x_map_ct, 64, 27)).astype(np.float32)
+            test_x = np.zeros((135*22+6252+6129, x_map_ct, 64, 27)).astype(np.float32)
+        else:
             test_x = np.zeros((135*22, x_map_ct, 64, 27)).astype(np.float32)
 
         #allocate pressure images
-        test_x = TensorPrepLib().prep_images(test_x, test_dat_f_real, test_dat_m_real, test_dat_f_synth, test_dat_m_synth, filter_sigma = 0.5, start_map_idx = pmat_gt_idx)
+        test_x = TensorPrepLib(opt=self.opt).prep_images(test_x, test_dat_f_real, test_dat_m_real, test_dat_f_synth, test_dat_m_synth, filter_sigma = 0.5, start_map_idx = pmat_gt_idx)
 
 
         if self.CTRL_PNL['mesh_recon_map_labels'] == True:
             #Initialize the precomputed depth and contact maps.
-            test_x = TensorPrepLib().prep_reconstruction_gt(test_x, test_dat_f_real, test_dat_m_real, test_dat_f_synth, test_dat_m_synth, start_map_idx = recon_gt_idx)
+            self.logger.info('mesh_recon_map_labels == True')
+            test_x = TensorPrepLib(opt=self.opt).prep_reconstruction_gt(test_x, test_dat_f_real, test_dat_m_real, test_dat_f_synth, test_dat_m_synth, start_map_idx = recon_gt_idx)
 
         if self.CTRL_PNL['recon_map_input_est'] == True:
+            self.logger.info('recon_map_input_est == True')
+            self.logger.info('dict_key of test_dat_f_real: {}'.format(test_dat_f_real.keys()))
+            # self.logger.info('dict_key of test_dat_f_synth: {}'.format(test_dat_f_synth.keys()))
+            
             #Initialize the precomputed depth and contact map input estimates
-            test_x = TensorPrepLib().prep_reconstruction_input_est(test_x, test_dat_f_real, test_dat_m_real, test_dat_f_synth, test_dat_m_synth, start_map_idx = 0, cnn_type = self.CTRL_PNL['CNN'])
+            test_x = TensorPrepLib(opt=self.opt).prep_reconstruction_input_est(test_x, test_dat_f_real, test_dat_m_real, test_dat_f_synth, test_dat_m_synth, start_map_idx = 0, cnn_type = self.CTRL_PNL['CNN'])
 
 
         im_ct = 0
-        if self.opt.slp == 'real' or self.opt.slp == 'mixedreal':
-            test_x = TensorPrepLib().prep_depth_input_images(test_x, test_dat_f_real, test_dat_m_real, None, None, start_map_idx = depth_in_idx, depth_type = 'all_meshes')
-            im_ct = len(test_dat_f_real['images']) + len(test_dat_m_real['images'])
-        if self.opt.slp != 'real':
-            if self.opt.no_blanket == False:
-               test_x = TensorPrepLib().prep_depth_input_images(test_x, None, None, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx, depth_type = 'all_meshes', mix_bl_nobl = True, im_ct = im_ct) #'all_meshes')#'
-            else:
-               test_x = TensorPrepLib().prep_depth_input_images(test_x, None, None, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx, depth_type = 'no_blanket', mix_bl_nobl = False, im_ct = im_ct) #'all_meshes')#'
+        
+        if opt.X_is == 'B' and opt.mod==2:
+            if self.CTRL_PNL['depth_out_unet'] == True and self.CTRL_PNL['mod'] == 1:
+                test_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(test_x, test_dat_f_real, test_dat_m_real, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx+4, depth_type = 'human_only')
+                self.logger.info('test_x with depth_out_unet = true')
 
+            if self.CTRL_PNL['depth_out_unet'] == True and self.CTRL_PNL['mod'] == 2:
+                test_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(test_x, test_dat_f_real, test_dat_m_real, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx+8, depth_type = 'unet_est')
+                self.logger.info('test_x with depth_out_unet = true and mod == 2')
 
-        if self.CTRL_PNL['depth_out_unet'] == True:
-            test_x = TensorPrepLib().prep_depth_input_images(test_x, test_dat_f_real, test_dat_m_real, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx+4, depth_type = 'human_only')
+        # for W case
+        else:
+            if self.opt.slp == 'real' or self.opt.slp == 'mixedreal':
+                test_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(test_x, test_dat_f_real, test_dat_m_real, None, None, start_map_idx = depth_in_idx, depth_type = 'all_meshes')
+                im_ct = len(test_dat_f_real['images']) + len(test_dat_m_real['images'])
+                self.logger.info('length of the test im_ct = {}'.format(im_ct))
+            if self.opt.slp != 'real':
+                if self.opt.no_blanket == False:
+                    test_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(test_x, None, None, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx, depth_type = 'all_meshes', mix_bl_nobl = True, im_ct = im_ct) #'all_meshes')#'
+                    self.logger.info('test_x without blanket ... ')
+                else:
+                    test_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(test_x, None, None, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx, depth_type = 'no_blanket', mix_bl_nobl = False, im_ct = im_ct) #'all_meshes')#'
+                    self.logger.info('test_x blanket ... ')
 
-        if self.CTRL_PNL['depth_out_unet'] == True and self.CTRL_PNL['mod'] == 2:
-            test_x = TensorPrepLib().prep_depth_input_images(test_x, test_dat_f_real, test_dat_m_real, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx+8, depth_type = 'unet_est')
+            if self.CTRL_PNL['depth_out_unet'] == True:
+                test_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(test_x, test_dat_f_real, test_dat_m_real, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx+4, depth_type = 'human_only')
+                self.logger.info('test_x with depth_out_unet = true')
 
+            if self.CTRL_PNL['depth_out_unet'] == True and self.CTRL_PNL['mod'] == 2:
+                test_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(test_x, test_dat_f_real, test_dat_m_real, test_dat_f_synth, test_dat_m_synth, start_map_idx = depth_in_idx+8, depth_type = 'unet_est')
+                self.logger.info('test_x with depth_out_unet = true and mod == 2')
 
+        self.logger.info('type of test_x'.format(type(test_x)))
         self.test_x_tensor = torch.Tensor(test_x)
+        
+        self.logger.info('test_x_tensor .....')
 
 
         test_y_flat = []  # Initialize the ground truth listhave
-        #if self.opt.slp == 'real' or self.opt.slp == 'mixedreal':
-        for gender_synth in [["f", test_dat_f_real], ["m", test_dat_m_real]]:
-            test_y_flat = SLPPrepLib().prep_labels_slp(test_y_flat, gender_synth[1], num_repeats = 1,
-                                                            z_adj = -0.075, gender = gender_synth[0], is_synth = True,
-                                                            markers_gt_type = '3D',
-                                                            initial_angle_est = self.CTRL_PNL['adjust_ang_from_est'],
-                                                            cnn_type = self.CTRL_PNL['CNN'])
+        
+        if opt.mod == 2 and opt.X_is == 'B':
+            if self.opt.slp == 'real' or self.opt.slp == 'mixedreal':
+                for gender_synth in [["f", test_dat_f_real], ["m", test_dat_m_real]]:
+                    test_y_flat = SLPPrepLib().prep_labels_slp(test_y_flat, gender_synth[1], num_repeats = 1,
+                                                                    z_adj = -0.075, gender = gender_synth[0], is_synth = True,
+                                                                    markers_gt_type = '3D',
+                                                                    # initial_angle_est = self.CTRL_PNL['adjust_ang_from_est'],
+                                                                    cnn_type = self.CTRL_PNL['CNN'])
 
 
-        if self.opt.slp != 'real':
-            for gender_synth in [["f", test_dat_f_synth], ["m", test_dat_m_synth]]:
-                test_y_flat = TensorPrepLib().prep_labels(test_y_flat, gender_synth[1],
-                                                            z_adj = -0.075, gender = gender_synth[0], is_synth = True,
-                                                            loss_vector_type = self.CTRL_PNL['loss_vector_type'],
-                                                            initial_angle_est = self.CTRL_PNL['adjust_ang_from_est'],
-                                                            cnn_type = self.CTRL_PNL['CNN'], x_y_adjust_mm = self.CTRL_PNL['x_y_offset_synth'])#[14, 10])
-            del test_dat_f_synth
-            del test_dat_m_synth
+            if self.opt.slp != 'real':
+                for gender_synth in [["f", test_dat_f_synth], ["m", test_dat_m_synth]]:
+                    test_y_flat = TensorPrepLib(opt=self.opt).prep_labels(test_y_flat, gender_synth[1],
+                                                                z_adj = -0.075, gender = gender_synth[0], is_synth = True,
+                                                                loss_vector_type = self.CTRL_PNL['loss_vector_type'],
+                                                                initial_angle_est = self.CTRL_PNL['adjust_ang_from_est'],
+                                                                cnn_type = self.CTRL_PNL['CNN'], x_y_adjust_mm = self.CTRL_PNL['x_y_offset_synth'])#[14, 10])
+                del test_dat_f_synth
+                del test_dat_m_synth
+            
+            # self.train_y_tensor = torch.from_numpy(train_y_flat)
+            # for the error: cannot convert the np.ndarray of np.object_
+            test_max_length = max(len(arr) for arr in test_y_flat)
+            self.logger.info('max_length of test_y_flat: {}'.format(test_max_length))
+            padded_arrays = [np.pad(arr, (0, test_max_length - len(arr)), 'constant') for arr in test_y_flat]
 
-        test_y_flat = np.array(test_y_flat)
+            test_y_flat = np.vstack(padded_arrays)
 
-        self.test_y_tensor = torch.Tensor(test_y_flat)
+            self.test_y_tensor = torch.Tensor(test_y_flat)
+
+        else:
+            if self.opt.slp == 'real' or self.opt.slp == 'mixedreal':
+                for gender_synth in [["f", test_dat_f_real], ["m", test_dat_m_real]]:
+                    test_y_flat = SLPPrepLib().prep_labels_slp(test_y_flat, gender_synth[1], num_repeats = 1,
+                                                                    z_adj = -0.075, gender = gender_synth[0], is_synth = True,
+                                                                    markers_gt_type = '3D',
+                                                                    initial_angle_est = self.CTRL_PNL['adjust_ang_from_est'],
+                                                                    cnn_type = self.CTRL_PNL['CNN'])
+
+
+            if self.opt.slp != 'real':
+                for gender_synth in [["f", test_dat_f_synth], ["m", test_dat_m_synth]]:
+                    test_y_flat = TensorPrepLib(opt=self.opt).prep_labels(test_y_flat, gender_synth[1],
+                                                                z_adj = -0.075, gender = gender_synth[0], is_synth = True,
+                                                                loss_vector_type = self.CTRL_PNL['loss_vector_type'],
+                                                                initial_angle_est = self.CTRL_PNL['adjust_ang_from_est'],
+                                                                cnn_type = self.CTRL_PNL['CNN'], x_y_adjust_mm = self.CTRL_PNL['x_y_offset_synth'])#[14, 10])
+                del test_dat_f_synth
+                del test_dat_m_synth
+
+            test_y_flat = np.array(test_y_flat)
+            self.test_y_tensor = torch.Tensor(test_y_flat)
+
+        # test_y_flat = np.array(test_y_flat)
+        # self.logger.info('test_y_flat type: {}'.format(type(test_y_flat)))
+        # self.test_y_tensor = torch.Tensor(test_y_flat)
 
         self.save_name = '_' + str(opt.mod) + '_' + opt.losstype + \
                          '_' + str(self.train_x_tensor.size()[0]) + 'ct' + \
                          '_' + str(self.CTRL_PNL['batch_size']) + 'b' + \
                          '_x' + str(1) + 'pm'
+        
+        self.logger.info(self.save_name)
 
 
         if self.CTRL_PNL['mesh_recon_map_labels'] == True:
@@ -545,7 +657,7 @@ class PhysicalTrainer():
         if  self.CTRL_PNL['depth_out_unet'] == True:
             self.save_name += '_dou'
 
-        print ('appending to', 'train' + self.save_name)
+        # print ('appending to', 'train' + self.save_name)
         self.train_val_losses = {}
         self.train_val_losses['loss_eucl'] = []
         self.train_val_losses['loss_betas'] = []
@@ -564,8 +676,11 @@ class PhysicalTrainer():
             self.train_val_losses['unet_loss'] = []
 
 
+        self.logger.info('self configuration done !!')
 
-
+    def count_param(self, model):
+        total_param = sum(p.numel() for p in model.parameters() if p.requires_grad)
+        return total_param
 
     def init_convnet_train(self):
 
@@ -581,10 +696,7 @@ class PhysicalTrainer():
         self.test_dataset = torch.utils.data.TensorDataset(self.test_x_tensor, self.test_y_tensor)
         self.test_loader = torch.utils.data.DataLoader(self.test_dataset, self.CTRL_PNL['batch_size'], shuffle=self.CTRL_PNL['shuffle'])
 
-
-
-        print ("Loading convnet model................................")
-
+        self.logger.info ("Loading convnet model................................")
         if self.opt.slp == 'real' and self.opt.losstype == 'direct':
             fc_output_size = 28
         else:
@@ -595,16 +707,23 @@ class PhysicalTrainer():
             self.model = convnet.CNN(fc_output_size, self.CTRL_PNL['loss_vector_type'], in_channels=self.CTRL_PNL['num_input_channels'], CTRL_PNL = self.CTRL_PNL)
             #self.model = torch.load(self.CTRL_PNL['convnet_fp_prefix'] + 'resnet34_2_anglesDC_108160ct_128b_x1pm_0.5rtojtdpth_depthestin_angleadj_rgangs_lb_lv2v_slpb_dpns_rt_40e_0.0001lr.pt',map_location={'cuda:' + str(self.opt.prev_device): 'cuda:' + str(self.opt.device)})
             self.model_smpl_pmr = fixedwt_smpl_pmr.SMPL_PMR(self.CTRL_PNL['loss_vector_type'], self.CTRL_PNL['batch_size'], verts_list = self.verts_list, CTRL_PNL = self.CTRL_PNL)
+            self.logger.info('self.model_smpl_pmr loaded')
         else:
             self.model = None
             self.model_smpl_pmr = None
+        
+        self.logger.info("model parameters: {}".format(self.count_param(self.model)))
+        self.logger.info("model_smpl_pmr parameters: {}".format(self.count_param(self.model_smpl_pmr)))
 
 
         if self.CTRL_PNL['CNN'] == 'resnet' and self.CTRL_PNL['train_only_betanet'] == False:
             if self.CTRL_PNL['train_only_CAL'] == True:
                 self.model_CAL = convnet_CAL.CNN(CTRL_PNL = self.CTRL_PNL)
+                self.logger.info('model_CAL == true....')
             else:
                 self.model_CAL = torch.load(self.CTRL_PNL['convnet_fp_prefix'] + 'CAL_10665ct_128b_500e_0.0001lr.pt',map_location={'cuda:' + str(self.opt.prev_device): 'cuda:' + str(self.opt.device)})
+                self.logger.info('model_CAL = False, train_only_betanet = False, CNN = resnet')
+            self.logger.info("model_CAL parameters: {}".format(self.count_param(self.model_CAL)))
         else:
             self.model_CAL = None
 
@@ -613,9 +732,12 @@ class PhysicalTrainer():
                 self.model_betanet = betanet.FC(CTRL_PNL = self.CTRL_PNL)
             else:
                 self.model_betanet = torch.load(self.CTRL_PNL['convnet_fp_prefix'] + 'betanet_108160ct_128b_volfrac_500e_0.0001lr.pt', map_location={'cuda:' + str(self.opt.prev_device): 'cuda:' + str(self.opt.device)})
-            print('loaded betanet')
+            self.logger.info('loaded betanet')
+
+            self.logger.info("model_betanet parameters: {}".format(self.count_param(self.model_betanet)))
         else:
             self.model_betanet = None
+
 
 
         learning_rate = 0.0001#0.0001
@@ -633,18 +755,23 @@ class PhysicalTrainer():
 
 
         # train the model one epoch at a time
-        for epoch in range(1, self.CTRL_PNL['num_epochs'] + 1):
-
+        self.logger.info('starting to train ...............')
+        for epoch in tqdm(range(1, self.CTRL_PNL['num_epochs'] + 1)):
+            
             self.t1 = time.time()
+            self.logger.info('starting the train_convet')
             self.train_convnet(epoch)
+            self.logger.info('done the train_convet')
 
             try:
                 self.t2 = time.time() - self.t1
             except:
                 self.t2 = 0
-            print ('Time taken by epoch',epoch,':',self.t2,' seconds')
+            # print ('Time taken by epoch',epoch,':',self.t2,' seconds')
+            self.logger.info('Time taken by epoch {}: {} seconds '.format(epoch, self.t2))
 
-            if epoch == self.CTRL_PNL['num_epochs'] or epoch == 40 or epoch == 100 or epoch == 140 or epoch == 200 or epoch == 500 or epoch ==300:# or epoch == 50 or epoch == 60 or epoch == 70 or epoch == 80 or epoch == 90:
+            self.logger.info('number of epochs = {} '.format(self.CTRL_PNL['num_epochs']))
+            if epoch == self.CTRL_PNL['num_epochs'] or epoch == 40 or epoch == 100 or epoch == 140 or epoch == 200 or epoch == 500 or epoch ==300 or epoch == 1:# or epoch == 50 or epoch == 60 or epoch == 70 or epoch == 80 or epoch == 90:
             #if epoch == self.CTRL_PNL['num_epochs'] or epoch == 20 or epoch == 25 or epoch == 30 or epoch == 35 or epoch == 40 or epoch == 45 or epoch == 50 or epoch == 55 or epoch == 60 or epoch == 65 or epoch == 75 or epoch == 80 or epoch == 90 or  epoch == 100:# or epoch == 50 or epoch == 60 or epoch == 70 or epoch == 80 or epoch == 90:
 
 
@@ -652,23 +779,32 @@ class PhysicalTrainer():
                     epoch_log = epoch + 100
                 else:
                     epoch_log = epoch + 0
+                
+                self.logger.info('epoch_log = {}'.format(epoch_log))
 
                 if self.CTRL_PNL['CNN'] == 'resnet':
                     cnn_name = 'resnet34'
+                    self.logger.info('cnn name = restnet34')
                 elif self.CTRL_PNL['CNN'] == 'resnetunet':
                     cnn_name = 'resnetunet34'
+                    self.logger.info('cnn name = restnetunet34')
 
                 if self.CTRL_PNL['train_only_betanet'] == False and self.CTRL_PNL['train_only_CAL'] == False:
+                    self.logger.info('saving model ....')
                     torch.save(self.model, self.CTRL_PNL['convnet_fp_prefix']+cnn_name+self.save_name+'_'+str(epoch_log)+'e'+'_'+str(learning_rate)+'lr.pt')
                     pkl.dump(self.train_val_losses,open(self.CTRL_PNL['convnet_fp_prefix']+cnn_name+'_losses'+self.save_name+'_'+str(epoch_log)+'e_'+str(learning_rate)+'lr.p', 'wb'))
+                    self.logger.info('saved model!!')
                 if self.CTRL_PNL['train_only_CAL'] == True:
+                    self.logger.info('saving model CAL ....')
                     torch.save(self.model_CAL, self.CTRL_PNL['convnet_fp_prefix']+'CAL_'+str(self.train_x_tensor.size()[0]) + 'ct_'+ str(self.CTRL_PNL['batch_size']) + 'b_' +str(epoch_log)+'e_'+str(learning_rate)+'lr.pt')
                     pkl.dump(self.train_val_losses,open(self.CTRL_PNL['convnet_fp_prefix']+'CAL_losses_'+str(self.train_x_tensor.size()[0]) + 'ct_'+ str(self.CTRL_PNL['batch_size']) + 'b_' +str(epoch_log)+'e_'+str(learning_rate)+'lr.p', 'wb'))
                 if self.CTRL_PNL['train_only_betanet'] == True:
+                    self.logger.info('saving model betanet ....')
                     torch.save(self.model_betanet, self.CTRL_PNL['convnet_fp_prefix']+'betanet_'+str(self.train_x_tensor.size()[0]) + 'ct_'+str(self.CTRL_PNL['batch_size']) + 'b_' +str(epoch_log)+'e_'+str(learning_rate)+'lr.pt')
                     pkl.dump(self.train_val_losses,open(self.CTRL_PNL['convnet_fp_prefix']+'betanet_losses_'+str(self.train_x_tensor.size()[0]) + 'ct_'+str(self.CTRL_PNL['batch_size']) + 'b_' +str(epoch_log)+'e_'+str(learning_rate)+'lr.p', 'wb'))
 
-        print (self.train_val_losses, 'trainval')
+        # print (self.train_val_losses, 'trainval')
+        self.logger.info('self.train_val_loss done - trainval')
         # Save the model (architecture and weights)
 
 
@@ -686,13 +822,16 @@ class PhysicalTrainer():
             for batch_idx, batch in enumerate(self.train_loader):
                 if self.CTRL_PNL['train_only_betanet'] == False and self.CTRL_PNL['train_only_CAL'] == False:
                     self.model.train()
+                    # self.logger.info('train_only_betanet=False + model_CAL=False + model.train()')
                     self.optimizer.zero_grad()
                 if self.CTRL_PNL['CNN'] == 'resnet' and self.CTRL_PNL['train_only_betanet'] == False:
                     self.model_CAL.train()
                     self.optimizer_CAL.zero_grad()
+                    # self.logger.info('resnet + train_only_betanet=False + model_CAL.train()')
                 if self.CTRL_PNL['CNN'] == 'resnet' and self.CTRL_PNL['train_only_CAL'] == False:
                     self.model_betanet.train()
                     self.optimizer_betanet.zero_grad()
+                    # self.logger.info('resnet + train_only_CAL=False + model_betanet.train()')
 
 
                 scores, INPUT_DICT, OUTPUT_DICT = \
@@ -795,7 +934,7 @@ class PhysicalTrainer():
                 if batch_idx% opt.log_interval == 0:# and batch_idx > 220:
 
                     val_n_batches = 4
-                    print ("evaluating on ", val_n_batches, batch_idx, opt.log_interval)
+                    self.logger.info("evaluating on: val_n_batches: {}, batch_idx: {}, log_interval: {} ".format(val_n_batches, batch_idx, opt.log_interval))
 
                     im_display_idx = 0 #random.randint(0,INPUT_DICT['batch_images'].size()[0])
 
@@ -823,13 +962,16 @@ class PhysicalTrainer():
                     examples_this_epoch = batch_idx * len(INPUT_DICT['batch_images'])
                     epoch_progress = 100. * batch_idx / len(self.train_loader)
 
+                    self.logger.info('starting the validation ...........')
                     val_loss = self.validate_convnet(n_batches=val_n_batches)
+                    self.logger.info('finished the valiate_convet!')
 
 
                     print_text_list = [ 'Train Epoch: {} ',
                                         '[{}',
                                         '/{} ',
                                         '({:.0f}%)]\t']
+                    
                     print_vals_list = [epoch,
                                       examples_this_epoch,
                                       len(self.train_loader.dataset),
@@ -895,27 +1037,38 @@ class PhysicalTrainer():
                     print_text_list.append('\n\t\t\t\t\t  Val Total Loss: {:.2f}')
                     print_vals_list.append(val_loss)
 
+                    # self.logger.info('print_text_list{}'.format(print_text_list))
+                    # self.logger.info('print_vals_list{}'.format(print_vals_list))
+                    # self.logger.info(print_text_list.format(print_vals_list))
+
                     print_text = ''
                     for item in print_text_list:
                         print_text += item
-                    print(print_text.format(*print_vals_list))
+                    self.logger.info(print_text.format(*print_vals_list))
 
 
-                    print ('appending to alldata losses')
+                    self.logger.info('appending to alldata losses .....')
                     self.train_val_losses['train_loss'].append(train_loss)
                     if self.CTRL_PNL['depth_out_unet'] == True:
                         self.train_val_losses['unet_loss'].append(1000*loss_unet.data.item())
                     self.train_val_losses['epoch_ct'].append(epoch)
                     self.train_val_losses['val_loss'].append(val_loss)
+                    self.logger.info('appended to alldata losses!! \n')
 
 
     def validate_convnet(self, verbose=False, n_batches=None):
+
+        
+
         if self.CTRL_PNL['train_only_betanet'] == False and self.CTRL_PNL['train_only_CAL'] == False:
             self.model.eval()
+            self.logger.info('model.eval()')
         if self.CTRL_PNL['CNN'] == 'resnet' and self.CTRL_PNL['train_only_betanet'] == False:
             self.model_CAL.eval()
+            self.logger.info('model_CAL.eval()')
         if self.CTRL_PNL['CNN'] == 'resnet' and self.CTRL_PNL['train_only_CAL'] == False:
             self.model_betanet.eval()
+            self.logger.info('model_betanet.eval()')
 
         loss = 0.
         n_examples = 0
@@ -1028,7 +1181,7 @@ if __name__ == "__main__":
 
     import optparse
 
-    from optparse_lib import get_depthnet_options
+    from lib_py.optparse_lib import get_depthnet_options
 
     p = optparse.OptionParser()
 
@@ -1040,13 +1193,31 @@ if __name__ == "__main__":
     p.add_option('--viz', action='store_true', dest='visualize', default=False,  help='Visualize training.')
     opt, args = p.parse_args()
 
+    if opt.X_is == 'W' and opt.slp == 'mixedreal' and opt.train_only_betanet==True:
+        pth_log = '/home/ganyong/Githubwork/Examples/BodyPressure/data_BP/results/log/log_step1_w_mixedreal_betanet_only.txt'
+    if opt.X_is == 'B' and opt.slp == 'mixedreal' and opt.train_only_betanet==True:
+        pth_log = '/home/ganyong/Githubwork/Examples/BodyPressure/data_BP/results/log/log_step1_B_mixedreal_betanet_only.txt'
+    
+    if opt.mod == 1 and opt.X_is == 'W' and opt.slp == 'real' and opt.train_only_CAL==True:
+        pth_log = '/home/ganyong/Githubwork/Examples/BodyPressure/data_BP/results/log/log_step1_w_mod1_real_cal_only.txt'
 
+    if opt.mod == 1 and opt.X_is == 'W' and opt.slp == 'mixedreal':
+        pth_log = '/home/ganyong/Githubwork/Examples/BodyPressure/data_BP/results/log/log_step2_w_mod1_mix.txt'
+    if opt.mod == 1 and opt.X_is == 'B' and opt.slp == 'mixedreal':
+        pth_log = '/home/ganyong/Githubwork/Examples/BodyPressure/data_BP/results/log/log_step2_b_mod1_mix.txt'
+    if opt.mod == 2 and opt.X_is == 'B' and opt.slp == 'mixedreal' and opt.v2v==True:
+        pth_log = '/home/ganyong/Githubwork/Examples/BodyPressure/data_BP/results/log/log_step4_b_mod2_mix_v2v.txt'
+    if opt.mod == 2 and opt.X_is == 'W' and opt.slp == 'mixedreal' and opt.v2v==True and opt.pmr==True:
+        pth_log = '/home/ganyong/Githubwork/Examples/BodyPressure/data_BP/results/log/log_step4_w_mod2_mix_v2v_pmr.txt'
+        
+    
+    logger = Colorlogger(pth_log)
+
+    logger.info('mod = {}'.format(opt.mod))
     if opt.hd == True:
         dana_lab_path = '/media/henry/multimodal_data_2/data/SLP/danaLab/'
     else:
-        dana_lab_path = FILEPATH +'data_BP/SLP/danaLab/'
-
-
+        dana_lab_path = '/mnt/DADES2/SLP/SLP/danaLab/'
 
 
     FileNameInputLib1 = FileNameInputLib(opt, depth = False)
@@ -1081,6 +1252,9 @@ if __name__ == "__main__":
             test_database_file_real_f, test_database_file_real_m, test_subj_mass_list_f, test_subj_mass_list_m = FileNameInputLib1.get_dana_slp(False)
             train_database_file_synth_f, train_database_file_synth_m = FileNameInputLib1.get_slpsynth_pressurepose(True, '')#_nonoise')
             test_database_file_synth_f, test_database_file_synth_m = FileNameInputLib1.get_slpsynth_pressurepose(False, '')#_nonoise')
+            logger.info('dataset len loading + depth = False... train_real_f: {}, test_real_f: {}, train_synth_f{}, test_synth_f{},'.format(
+                len(train_database_file_real_f), len(test_database_file_real_f), len(train_database_file_synth_f), len(test_database_file_synth_f))
+            )
         else:
             sys.exit()
 
@@ -1123,6 +1297,9 @@ if __name__ == "__main__":
             test_database_file_real_depth_f, test_database_file_real_depth_m, test_subj_mass_list_f, test_subj_mass_list_m = FileNameInputLib2.get_dana_slp(False)
             train_database_file_synth_depth_f, train_database_file_synth_depth_m = FileNameInputLib2.get_slpsynth_pressurepose(True, '')#_nonoise')
             test_database_file_synth_depth_f, test_database_file_synth_depth_m = FileNameInputLib2.get_slpsynth_pressurepose(False, '')#_nonoise')
+            logger.info('dataset len loading + depth = Ture... train_real_f: {}, test_real_f: {}, train_synth_f{}, test_synth_f{},'.format(
+                len(train_database_file_real_depth_f), len(test_database_file_real_depth_f), len(train_database_file_synth_depth_f), len(test_database_file_synth_depth_f))
+            )
         else:
             sys.exit()
 
@@ -1135,7 +1312,7 @@ if __name__ == "__main__":
     #print "  "
     #for item in train_files_f[1]: print item
 
-    p = PhysicalTrainer(train_files_f, train_files_m, test_files_f, test_files_m, opt)
+    p = PhysicalTrainer(train_files_f, train_files_m, test_files_f, test_files_m, opt, logger)
 
 
     p.init_convnet_train()

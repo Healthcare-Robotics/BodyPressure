@@ -9,7 +9,7 @@
 
 
 
-txtfile = open("../FILEPATH.txt")
+txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
@@ -48,12 +48,12 @@ import lib_basic_2Dviz as libPyBasic2D
 
 import optparse
 
-from visualization_lib_bp import VisualizationLib
-from preprocessing_lib_bp import PreprocessingLib
-from tensorprep_lib_bp import TensorPrepLib
-from unpack_depth_batch_lib_bp import UnpackDepthBatchLib
-import kinematics_lib_bp as kinematics_lib_br
-from slp_prep_lib_bp import SLPPrepLib
+from lib_py.visualization_lib_bp import VisualizationLib
+from lib_py.preprocessing_lib_bp import PreprocessingLib
+from lib_py.tensorprep_lib_bp import TensorPrepLib
+from lib_py.unpack_depth_batch_lib_bp import UnpackDepthBatchLib
+import lib_py.kinematics_lib_bp as kinematics_lib_br
+from lib_py.slp_prep_lib_bp import SLPPrepLib
 
 
 try:
@@ -186,16 +186,16 @@ class Viz3DPose():
 
         test_x = np.zeros((len_f + len_m, x_map_ct, 64, 27)).astype(np.float32)
         #allocate pressure images
-        test_x = TensorPrepLib().prep_images(test_x, test_dat_f_slp, test_dat_m_slp, None, None, filter_sigma = 0.5, start_map_idx = pmat_gt_idx)
+        test_x = TensorPrepLib(opt=self.opt).prep_images(test_x, test_dat_f_slp, test_dat_m_slp, None, None, filter_sigma = 0.5, start_map_idx = pmat_gt_idx)
 
 
         self.mesh_reconstruction_maps = None
         self.reconstruction_maps_input_est = None
 
         if opt.ctype == 'uncover':
-            test_x = TensorPrepLib().prep_depth_input_images(test_x, test_dat_f_slp, test_dat_m_slp, None, None, start_map_idx = depth_in_idx, depth_type = 'no_blanket')
+            test_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(test_x, test_dat_f_slp, test_dat_m_slp, None, None, start_map_idx = depth_in_idx, depth_type = 'no_blanket')
         else:
-            test_x = TensorPrepLib().prep_depth_input_images(test_x, test_dat_f_slp, test_dat_m_slp, None, None, start_map_idx = depth_in_idx, depth_type = 'all_meshes')
+            test_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(test_x, test_dat_f_slp, test_dat_m_slp, None, None, start_map_idx = depth_in_idx, depth_type = 'all_meshes')
 
 
         self.test_x_tensor = torch.Tensor(test_x)
@@ -405,11 +405,11 @@ if __name__ ==  "__main__":
         sys.exit()
 
 
-    dana_lab_path = FILEPATH + 'data_BP/SLP/danaLab/'
+    dana_lab_path = FILEPATH + '/mnt/DADES2/SLP/SLP/danaLab/'
 
     all_subj_str_list = ['%05d' % (opt.p_idx)]
 
-    phys_arr = np.load(FILEPATH + 'data_BP/SLP/danaLab/physiqueData.npy')
+    phys_arr = np.load('/mnt/DADES2/SLP/SLP/danaLab/physiqueData.npy')
     phys_arr[:, [2, 0]] = phys_arr[:, [0, 2]]
     testing_database_file_f = []
     testing_database_file_m = []

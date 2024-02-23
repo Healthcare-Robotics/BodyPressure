@@ -22,8 +22,9 @@ Modules included:
 '''
 
 import chumpy
-import lbs
-from posemapper import posemap
+# from .lbs import verts_core
+from .lbs import verts_core as lbs_verts_core
+from .posemapper import posemap
 import scipy.sparse as sp
 from chumpy.ch import MatVecMult
 
@@ -63,7 +64,7 @@ def verts_decorated(trans, pose,
         assert(ischumpy(J))
         
     assert(bs_style=='lbs')
-    result, Jtr = lbs.verts_core(pose, v, J, weights, kintree_table, want_Jtr=True, xp=chumpy)
+    result, Jtr = lbs_verts_core(pose, v, J, weights, kintree_table, want_Jtr=True, xp=chumpy)
      
     tr = trans.reshape((1,3))
     result = result + tr
@@ -98,6 +99,6 @@ def verts_core(pose, v, J, weights, kintree_table, bs_style, want_Jtr=False, xp=
         assert(hasattr(weights, 'dterms'))
      
     assert(bs_style=='lbs')
-    result = lbs.verts_core(pose, v, J, weights, kintree_table, want_Jtr, xp)
+    result = lbs_verts_core(pose, v, J, weights, kintree_table, want_Jtr, xp)
 
     return result
