@@ -18,7 +18,7 @@ from torch.autograd import Variable
 import chumpy as ch
 
 
-txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
+txtfile = open("../FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
@@ -27,7 +27,7 @@ import sys
 sys.path.insert(0, '../lib_py')
 sys.path.insert(-1,FILEPATH+'smpl/smpl_webuser3')
 sys.path.insert(0, FILEPATH)
-# sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
+sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 
 try:
     import cPickle as pkl
@@ -274,8 +274,8 @@ class PhysicalTrainer():
             test_dat_f_synth = None
             test_dat_m_synth = None
         else:
-            test_dat_f_synth = TensorPrepLib(opt=self.opt).load_files_to_database(test_files_f, creation_type = 'synth', reduce_data = reduce_data, depth_in = True)
-            test_dat_m_synth = TensorPrepLib(opt=self.opt).load_files_to_database(test_files_m, creation_type = 'synth', reduce_data = reduce_data, depth_in = True)
+            test_dat_f_synth = TensorPrepLib().load_files_to_database(test_files_f, creation_type = 'synth', reduce_data = reduce_data, depth_in = True)
+            test_dat_m_synth = TensorPrepLib().load_files_to_database(test_files_m, creation_type = 'synth', reduce_data = reduce_data, depth_in = True)
 
 
 
@@ -707,7 +707,7 @@ if __name__ == "__main__":
     if opt.hd == True:
         dana_lab_path = '/media/henry/multimodal_data_2/data/SLP/danaLab/'
     else:
-        dana_lab_path = '/mnt/DADES2/SLP/SLP/danaLab/'
+        dana_lab_path = FILEPATH + 'data_BP/SLP/danaLab/'
 
 
 

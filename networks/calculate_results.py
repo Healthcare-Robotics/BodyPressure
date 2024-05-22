@@ -25,7 +25,7 @@ except:
         with open(filename, 'rb') as f:
             return pkl.load(f, encoding = 'latin1')
 
-txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
+txtfile = open("../FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
@@ -39,11 +39,11 @@ print(sys.path)
 
 import optparse
 
-import lib_py.lib_pyrender_depth as libPyRender
-from lib_py.visualization_lib_bp import VisualizationLib
-from lib_py.preprocessing_lib_bp import PreprocessingLib
-from lib_py.tensorprep_lib_bp import TensorPrepLib
-from lib_py.unpack_depth_batch_lib_bp import UnpackDepthBatchLib
+import lib_pyrender_depth as libPyRender
+from visualization_lib_bp import VisualizationLib
+from preprocessing_lib_bp import PreprocessingLib
+from tensorprep_lib_bp import TensorPrepLib
+from unpack_depth_batch_lib_bp import UnpackDepthBatchLib
 
 
 try:

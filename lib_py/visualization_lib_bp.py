@@ -76,8 +76,8 @@ class VisualizationLib():
                                                         'Neck   ', 'L Sh.in', 'R Sh.in', 'Head   ', 'L Sh.ou', 'R Sh.ou',
                                                         'L Elbow', 'R Elbow', 'L Wrist', 'R Wrist', 'L Hand ', 'R Hand ']], np.transpose(
             np.concatenate(([['', '', '', ''], [' x, cm ', ' y, cm ', ' z, cm ', '  norm ']], error_avg_print))))))
-        # if printerror == True:
-        #     print(data, error_avg_print)
+        if printerror == True:
+            print(data, error_avg_print)
 
 
         error_std = np.std(error, axis=0) / 10
@@ -154,8 +154,8 @@ class VisualizationLib():
                                                    'Torso  ', 'R Elbow', 'L Elbow', 'R Hand ', 'L Hand ',
                                                    'R Knee ', 'L Knee ', 'R Foot ', 'L Foot ']], np.transpose(
             np.concatenate(([['', '', '', ''], [' x, cm ', ' y, cm ', ' z, cm ', '  norm ']], error_avg_print))))))
-        # if printerror == True:
-        #     print(data, error_avg_print)
+        if printerror == True:
+            print(data, error_avg_print)
 
 
         error_std = np.std(error, axis=0) / 10

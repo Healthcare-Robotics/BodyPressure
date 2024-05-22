@@ -8,8 +8,8 @@ import torchvision
 import time
 
 
-from lib_py.visualization_lib_bp import VisualizationLib
-from lib_py.kinematics_lib_bp import KinematicsLib
+from visualization_lib_bp import VisualizationLib
+from kinematics_lib_bp import KinematicsLib
 
 
 class FC(nn.Module):

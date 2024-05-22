@@ -19,7 +19,7 @@ import math
 from random import shuffle
 import pickle as pickle
 
-txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
+txtfile = open("../FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
@@ -538,7 +538,7 @@ if __name__ == '__main__':
         CTRL_PNL['depth_out_unet'] = False
 
 
-        dana_lab_path = "/mnt/DADES2/SLP/SLP/danaLab/"
+        dana_lab_path = FILEPATH+"data_BP/SLP/danaLab/"
 
         load_real = False
         if load_real == True:
