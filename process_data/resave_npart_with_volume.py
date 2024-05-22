@@ -6,7 +6,7 @@ import numpy as np
 import random
 import copy
 
-txtfile = open("../FILEPATH.txt")
+txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
@@ -205,7 +205,7 @@ if __name__ ==  "__main__":
     if opt.hd == True:
         dana_lab_path = '/media/henry/multimodal_data_2/data/SLP/danaLab/'
     else:
-        dana_lab_path = FILEPATH+'data_BP/SLP/danaLab/'
+        dana_lab_path = '/mnt/DADES2/SLP/SLP/danaLab/'
 
 
 

@@ -9,10 +9,11 @@
 
 
 
-txtfile = open("../FILEPATH.txt")
+txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
+from logger import Colorlogger
 
 import sys
 sys.path.insert(0, '../lib_py')
@@ -27,6 +28,9 @@ import copy
 from functools import partial
 from scipy import ndimage
 
+# pth_log = 'log_W_cover2_model2_pimge_pmr_v2v.txt'
+# logger = Colorlogger(pth_log)
+
 try:
     import cPickle as pkl
     def load_pickle(filename):
@@ -40,19 +44,19 @@ except:
 
 
 import fixedwt_smpl_pmr_net as fixedwt_smpl_pmr
-import lib_pyrender_depth as libPyRender
-import lib_pyrender_depth_savefig as libPyRenderSave
-import lib_pyrender_depth_plp as libPyRenderPLP
+import lib_py.lib_pyrender_depth as libPyRender
+import lib_py.lib_pyrender_depth_savefig as libPyRenderSave
+import lib_py.lib_pyrender_depth_plp as libPyRenderPLP
 
 
 import optparse
 
-from visualization_lib_bp import VisualizationLib
-from preprocessing_lib_bp import PreprocessingLib
-from tensorprep_lib_bp import TensorPrepLib
-from unpack_depth_batch_lib_bp import UnpackDepthBatchLib
-import kinematics_lib_bp as kinematics_lib_br
-from slp_prep_lib_bp import SLPPrepLib
+from lib_py.visualization_lib_bp import VisualizationLib
+from lib_py.preprocessing_lib_bp import PreprocessingLib
+from lib_py.tensorprep_lib_bp import TensorPrepLib
+from lib_py.unpack_depth_batch_lib_bp import UnpackDepthBatchLib
+import lib_py.kinematics_lib_bp as kinematics_lib_br
+from lib_py.slp_prep_lib_bp import SLPPrepLib
 
 
 try:
@@ -160,6 +164,8 @@ class Viz3DPose():
         self.pressure = None
 
         self.CTRL_PNL = {}
+
+        self.pimg_list = []
 
 
 
@@ -300,7 +306,8 @@ class Viz3DPose():
         #if len(testing_database_file_m) > 0 and len(testing_database_file_f) == 0:
         #    model_path = '../../../git/SMPL_python_v.1.0.0/smpl/models/basicModel_m_lbs_10_207_0_v1.0.0.pkl'
         #elif len(testing_database_file_f) > 0 and len(testing_database_file_m) == 0:
-        model_path = '../../../git/SMPL_python_v.1.0.0/smpl/models/basicModel_f_lbs_10_207_0_v1.0.0.pkl'
+        # model_path = '../../../git/SMPL_python_v.1.0.0/smpl/models/basicModel_f_lbs_10_207_0_v1.0.0.pkl'
+        model_path = '/home/ganyong/Githubwork/Examples/BodyPressure/smpl/models/basicModel_f_lbs_10_207_0_v1.0.0.pkl'
         #else:
         #    sys.exit("can only test f or m at one time, not both.")
         self.m = load_model(model_path)
@@ -363,16 +370,16 @@ class Viz3DPose():
             test_x = np.zeros((int(len_f + len_m)/4, x_map_ct, 64, 27)).astype(np.float32)
 
         #allocate pressure images
-        test_x = TensorPrepLib().prep_images(test_x, test_dat_f_slp, test_dat_m_slp, None, None, filter_sigma = 0.5, start_map_idx = pmat_gt_idx)
+        test_x = TensorPrepLib(opt=self.opt).prep_images(test_x, test_dat_f_slp, test_dat_m_slp, None, None, filter_sigma = 0.5, start_map_idx = pmat_gt_idx)
 
 
         self.mesh_reconstruction_maps = None
         self.reconstruction_maps_input_est = None
 
         if self.opt.no_blanket == True or opt.ctype == 'uncover':
-            test_x = TensorPrepLib().prep_depth_input_images(test_x, test_dat_f_slp, test_dat_m_slp, None, None, start_map_idx = depth_in_idx, depth_type = 'no_blanket')
+            test_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(test_x, test_dat_f_slp, test_dat_m_slp, None, None, start_map_idx = depth_in_idx, depth_type = 'no_blanket')
         else:
-            test_x = TensorPrepLib().prep_depth_input_images(test_x, test_dat_f_slp, test_dat_m_slp, None, None, start_map_idx = depth_in_idx, depth_type = 'all_meshes')
+            test_x = TensorPrepLib(opt=self.opt).prep_depth_input_images(test_x, test_dat_f_slp, test_dat_m_slp, None, None, start_map_idx = depth_in_idx, depth_type = 'all_meshes')
 
 
 
@@ -443,7 +450,7 @@ class Viz3DPose():
         for im_num in range(self.opt.pose_num, np.shape(test_x)[0]):#self.color_all.shape[0]):
 
 
-            print("TESTING IM NUM ", im_num)
+            # logger.info("TESTING IM NUM: {} ".format(im_num))
 
             #PRESSURE
             self.pressure = test_x[im_num, 0, :, :]
@@ -508,7 +515,7 @@ class Viz3DPose():
         #print(betas_est, "BETAS GT")
 
         gender = 'f'
-        model_path = '/home/henry/git/SMPL_python_v.1.0.0/smpl/models/basicModel_'+gender+'_lbs_10_207_0_v1.0.0.pkl'
+        model_path = '/home/ganyong/Githubwork/Examples/BodyPressure/smpl/models/basicModel_'+gender+'_lbs_10_207_0_v1.0.0.pkl'
         mf = load_model(model_path)
 
         human_mesh_face_all = [np.array(mf.f)]
@@ -821,13 +828,28 @@ class Viz3DPose():
             #for i in [0, 5, 10, 15, 20, 25, 30, 35, 40]:
             #    pmatV_est[ct:ct+4, 0:4] = i
             #    ct += 4
+
             self.pmat_gt_est_list.append([pmatV, pmatV_est])
             self.VIZ_DICT['p_img_est'] =pmatV_est*1.
+            # logger.info(len(pmatV))
+            
 
+           
+            pimg_error = 133.32*133.32*(1/1000000)*np.mean(np.square(np.array(pmatV)-np.array(pmatV_est)) ) 
+            self.pimg_list.append(pimg_error)
+            # logger.info("Pimg error, mmHg squared: {}".format(np.mean(np.square(np.array(pmatV)-np.array(pmatV_est)) )) )
+            # logger.info("Pimg error, kPa squared : {}".format(self.pimg_list))
 
-            print("Pimg error, mmHg squared", np.mean(np.square(np.array(pmatV)-np.array(pmatV_est)) ) )
-            print("Pimg error, kPa squared", 133.32*133.32*(1/1000000)*np.mean(np.square(np.array(pmatV)-np.array(pmatV_est)) ) )
+            # logger.info("Pimg_mean: {}".format(np.mean(self.pimg_list)))
+            # # for the pimg loss
 
+            ## for the v2vp loss
+            self.RESULTS_DICT = self.pyRender.render_mesh_pc_bed_pyrender_everything(smpl_verts, smpl_faces, camera_point,
+                                                                                         self.RESULTS_DICT, smpl_verts_gt = smpl_verts_gt,
+                                                                                         pc=pc_autofil_red, pmat=pmatV, pmat_est = pmatV_est,
+                                                                                         targets=self.tar_sample.view(72).cpu(),
+                                                                                         scores=sc_sample.cpu())
+        
 
 
 
@@ -878,13 +900,14 @@ class Viz3DPose():
 if __name__ ==  "__main__":
 
     import optparse
-    from optparse_lib import get_depthnet_options
+    from lib_py.optparse_lib import get_depthnet_options
+    
 
     p = optparse.OptionParser()
 
     p = get_depthnet_options(p)
 
-    p.add_option('--mod', action='store', type = 'int', dest='mod', default=1,
+    p.add_option('--mod', action='store', type = 'int', dest='mod', default=2,
                  help='Choose a network.')
 
     p.add_option('--p_idx', action='store', type='int', dest='p_idx', default=0,
@@ -896,7 +919,7 @@ if __name__ ==  "__main__":
     p.add_option('--viz', action='store', dest='viz', default='None',
                  help='Visualize training. specify `2D` or `3D`.')
 
-    p.add_option('--ctype', action='store', dest='ctype', default='None',
+    p.add_option('--ctype', action='store', dest='ctype', default='uncover',
                  help='Visualize training. specify `uncover` or `cover1` or `cover2`.')
 
     p.add_option('--pimgerr', action='store_true', dest='pimgerr', default=False,
@@ -919,11 +942,11 @@ if __name__ ==  "__main__":
 
 
     if opt.hd == True:
-        dana_lab_path = '/media/henry/multimodal_data_2/data/SLP/danaLab/'
+        dana_lab_path = '/mnt/DADES2/SLP/SLP/danaLab/'
     else:
-        dana_lab_path = FILEPATH + 'data_BP/SLP/danaLab/'
+        dana_lab_path = '/mnt/DADES2/SLP/SLP/danaLab/'
 
-
+    # the folders 
     if opt.p_idx == 0:
         test_crit = 'last12'
     else:
@@ -944,7 +967,8 @@ if __name__ ==  "__main__":
         all_subj_str_list = ['%05d' % (opt.p_idx)]
 
 
-    phys_arr = np.load(FILEPATH + 'data_BP/SLP/danaLab/physiqueData.npy')
+    # phys_arr = np.load('/mnt/DADES2/SLP/SLP/danaLab/physiqueData.npy')
+    phys_arr = np.load('/mnt/DADES2/SLP/SLP/danaLab/physiqueData.npy')
     phys_arr[:, [2, 0]] = phys_arr[:, [0, 2]]
     testing_database_file_f = []
     testing_database_file_m = []
@@ -1167,6 +1191,8 @@ if __name__ ==  "__main__":
     model_betanet = torch.load(FILEPATH + 'data_BP/convnets/betanet_108160ct_128b_volfrac_500e_0.0001lr.pt', map_location='cpu')
     #python evaluate_depthreal_slp.py  --depthnoise  --p_idx 91 --loss_root --rgangs --small --pmr  --viz '3D' --blanket
     F_eval = V3D.evaluate_data(testing_database_file_f, testing_database_file_m, model, model2)
+    Pimg = F_eval.pimg_list
+    # logger.info(np.mean(Pimg))
 
 
 

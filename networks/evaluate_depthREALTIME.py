@@ -8,7 +8,7 @@
 
 
 
-txtfile = open("../FILEPATH.txt")
+txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
@@ -39,16 +39,16 @@ except:
 
 
 import fixedwt_smpl_pmr_net as fixedwt_smpl_pmr
-import lib_pyrender_depthREALTIME as libPyRender
+import lib_py.lib_pyrender_depthREALTIME as libPyRender
 
 import optparse
 
-from visualization_lib_bp import VisualizationLib
-from preprocessing_lib_bp import PreprocessingLib
-from tensorprep_lib_bp import TensorPrepLib
-from unpack_depth_batch_lib_bp import UnpackDepthBatchLib
-import kinematics_lib_bp as kinematics_lib_br
-from slp_prep_lib_bp import SLPPrepLib
+from lib_py.visualization_lib_bp import VisualizationLib
+from lib_py.preprocessing_lib_bp import PreprocessingLib
+from lib_py.tensorprep_lib_bp import TensorPrepLib
+from lib_py.unpack_depth_batch_lib_bp import UnpackDepthBatchLib
+import lib_py.kinematics_lib_bp as kinematics_lib_br
+from lib_py.slp_prep_lib_bp import SLPPrepLib
 
 
 try:
@@ -316,7 +316,7 @@ class Viz3DPose():
         else:
             all_subj_str_list = ['%05d' % (self.opt.p_idx)]
 
-        phys_arr = np.load(FILEPATH + 'data_BP/SLP/danaLab/physiqueData.npy')
+        phys_arr = np.load('/mnt/DADES2/SLP/SLP/danaLab/physiqueData.npy')
         phys_arr[:, [2, 0]] = phys_arr[:, [0, 2]]
         testing_database_file_f = []
         testing_database_file_m = []
@@ -930,7 +930,7 @@ if __name__ ==  "__main__":
     if opt.hd == True:
         dana_lab_path = '/media/henry/multimodal_data_2/data/SLP/danaLab/'
     else:
-        dana_lab_path = FILEPATH + 'data_BP/SLP/danaLab/'
+        dana_lab_path = '/mnt/DADES2/SLP/SLP/danaLab/'
 
 
 
