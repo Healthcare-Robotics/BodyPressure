@@ -10,11 +10,11 @@ from scipy import ndimage
 import scipy.stats as ss
 from scipy.ndimage.interpolation import zoom
 
-txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
+txtfile = open("../FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
-from lib_py.kinematics_lib_bp import KinematicsLib
+from kinematics_lib_bp import KinematicsLib
 
 # PyTorch libraries
 import argparse
@@ -582,7 +582,7 @@ class MeshDepthLib():
 
             #print(x.size())
             if int(x.size()[0]) > 1728:
-                # print("dddd", x.size())
+                print("dddd", x.size())
                 x = x[0:1728, :]
             elif int(x.size()[0]) <  1728:
                 print("dddd")

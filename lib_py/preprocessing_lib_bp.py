@@ -537,7 +537,7 @@ class PreprocessingLib():
         depth_images = depth_tensor.data.numpy().astype(np.int16)
         variation_amount = float(0.2)
 
-        # print ("ADDING DEPTH NOISE")
+        print ("ADDING DEPTH NOISE")
 
 
 

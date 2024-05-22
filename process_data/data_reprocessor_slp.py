@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.pylab import *
 
-txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
+txtfile = open("../FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 

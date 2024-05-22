@@ -12,8 +12,8 @@ import scipy.stats as ss
 from scipy.ndimage.interpolation import zoom
 
 
-from lib_py.kinematics_lib_bp import KinematicsLib
-from lib_py.preprocessing_lib_bp import PreprocessingLib
+from kinematics_lib_bp import KinematicsLib
+from preprocessing_lib_bp import PreprocessingLib
 from scipy.ndimage.filters import gaussian_filter
 
 # PyTorch libraries
@@ -227,8 +227,8 @@ class UnpackDepthBatchLib():
         INPUT_DICT['batch_images'] = images_up.data
         INPUT_DICT['batch_targets'] = targets.data
 
-        # if CTRL_PNL['train_only_betanet'] == False:
-        #     print(images_up.size(), 'network input size')
+        if CTRL_PNL['train_only_betanet'] == False:
+            print(images_up.size(), 'network input size')
 
         OUTPUT_DICT = {}
         scores = None

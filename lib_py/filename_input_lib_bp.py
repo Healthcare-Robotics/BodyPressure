@@ -29,7 +29,7 @@ HIGH_TAXEL_THRESH_X = (NUMOFTAXELS_X - 1)
 HIGH_TAXEL_THRESH_Y = (NUMOFTAXELS_Y - 1)
 
 
-txtfile = open("/home/ganyong/Githubwork/Examples/BodyPressure/FILEPATH.txt")
+txtfile = open("../FILEPATH.txt")
 FILEPATH = txtfile.read().replace("\n", "")
 txtfile.close()
 
@@ -42,8 +42,6 @@ class FileNameInputLib():
             self.data_fp_prefix = "/media/henry/git/multimodal_data_2/data_BR/"
 
         self.data_fp_suffix = ''
-
-        self.opt = opt
 
         if opt.mod == 2:  # or opt.quick_test == True:
             if opt.X_is == 'W':
@@ -127,7 +125,7 @@ class FileNameInputLib():
         if is_train == True:
             for i in range(1,3):
                 if i == 7: continue
-                phys_arr = np.load('/mnt/DADES2/SLP/SLP/danaLab/physiqueData.npy')
+                phys_arr = np.load(FILEPATH+'data_BP/SLP/danaLab/physiqueData.npy')
                 phys_arr[:, [2, 0]] = phys_arr[:, [0, 2]]
                 gender_bin = int(phys_arr[int(i) - 1][2])
                 if gender_bin == 1:
@@ -138,7 +136,7 @@ class FileNameInputLib():
                     database_file_f.append('%05d' % (i))
         else:
             for i in range(91,92):
-                phys_arr = np.load('/mnt/DADES2/SLP/SLP/danaLab/physiqueData.npy')
+                phys_arr = np.load(FILEPATH+'data_BP/SLP/danaLab/physiqueData.npy')
                 phys_arr[:, [2, 0]] = phys_arr[:, [0, 2]]
                 gender_bin = int(phys_arr[int(i) - 1][2])
                 if gender_bin == 1:
@@ -163,7 +161,7 @@ class FileNameInputLib():
             #for i in range(1, 71):
             for i in range(1, 81):
                 if i == 7: continue
-                phys_arr = np.load('/mnt/DADES2/SLP/SLP/danaLab/physiqueData.npy')
+                phys_arr = np.load(FILEPATH+'data_BP/SLP/danaLab/physiqueData.npy')
                 phys_arr[:, [2, 0]] = phys_arr[:, [0, 2]]
                 gender_bin = int(phys_arr[int(i) - 1][2])
                 if gender_bin == 1:
@@ -175,7 +173,7 @@ class FileNameInputLib():
         else:
             for i in range(81,103):
             #for i in range(71, 81):
-                phys_arr = np.load('/mnt/DADES2/SLP/SLP/danaLab/physiqueData.npy')
+                phys_arr = np.load(FILEPATH+'data_BP/SLP/danaLab/physiqueData.npy')
                 phys_arr[:, [2, 0]] = phys_arr[:, [0, 2]]
                 gender_bin = int(phys_arr[int(i) - 1][2])
                 if gender_bin == 1:
@@ -200,7 +198,7 @@ class FileNameInputLib():
         if is_train == True:
             for i in range(1, 2):
                 #if i == 7: continue
-                phys_arr = np.load('/mnt/DADES2/SLP/SLP/danaLab/physiqueData.npy')
+                phys_arr = np.load(FILEPATH+'data_BP/SLP/danaLab/physiqueData.npy')
                 phys_arr[:, [2, 0]] = phys_arr[:, [0, 2]]
                 gender_bin = int(phys_arr[int(i) - 1][2])
                 if gender_bin == 1:
@@ -212,7 +210,7 @@ class FileNameInputLib():
         else:
             #for i in range(91,103):
             for i in range(71, 72):
-                phys_arr = np.load('/mnt/DADES2/SLP/SLP/danaLab/physiqueData.npy')
+                phys_arr = np.load(FILEPATH+'data_BP/SLP/danaLab/physiqueData.npy')
                 phys_arr[:, [2, 0]] = phys_arr[:, [0, 2]]
                 gender_bin = int(phys_arr[int(i) - 1][2])
                 if gender_bin == 1:
@@ -264,19 +262,15 @@ class FileNameInputLib():
             database_file_m.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_lside_m_71to80_2002' + self.data_fp_suffix + extra_suffix + '.p')
             database_file_m.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_rside_m_71to80_1939' + self.data_fp_suffix + extra_suffix + '.p')
 
-        # print(self.opt.mod)
 
-        elif self.opt.mod==2 and self.opt.X_is=='B':
-            # pass
-            database_file_f.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_lay_f_71to80_2184' + self.data_fp_suffix + extra_suffix + '.p')
-            database_file_f.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_lside_f_71to80_2058' + self.data_fp_suffix + extra_suffix + '.p')
-            database_file_f.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_rside_f_71to80_2010' + self.data_fp_suffix + extra_suffix + '.p')
-            database_file_m.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_lay_m_71to80_2188' + self.data_fp_suffix + extra_suffix + '.p')
-            database_file_m.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_lside_m_71to80_2002' + self.data_fp_suffix + extra_suffix + '.p')
-            database_file_m.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_rside_m_71to80_1939' + self.data_fp_suffix + extra_suffix + '.p')
-        
         else:
             pass
+            #database_file_f.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_lay_f_71to80_2184' + self.data_fp_suffix + extra_suffix + '.p')
+            #database_file_f.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_lside_f_71to80_2058' + self.data_fp_suffix + extra_suffix + '.p')
+            #database_file_f.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_rside_f_71to80_2010' + self.data_fp_suffix + extra_suffix + '.p')
+            #database_file_m.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_lay_m_71to80_2188' + self.data_fp_suffix + extra_suffix + '.p')
+            #database_file_m.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_lside_m_71to80_2002' + self.data_fp_suffix + extra_suffix + '.p')
+            #database_file_m.append(self.data_fp_prefix + synth_folder+self.synth_folder_suffix+'/train_slp_rside_m_71to80_1939' + self.data_fp_suffix + extra_suffix + '.p')
 
         return database_file_f, database_file_m
 
